@@ -5,9 +5,9 @@ import "firebase/compat/auth";
 import TheWelcome from '../components/TheWelcome.vue';
 
 onMounted(() => {
-  // if (firebase.auth().currentUser) {
-  //   console.log(`Current user: ${firebase.auth().currentUser.email}`);
-  // }
+  if (firebase.auth().currentUser) {
+    console.log(`Current user: ${firebase.auth().currentUser.email}`);
+  }
 });
 </script>
 
