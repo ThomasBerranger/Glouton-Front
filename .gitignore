@@ -28,3 +28,8 @@ coverage
 *.sw?
 
 src/config
+.github
+.firebase
+.firebaserc
+firebase.json
+database.rules.json
