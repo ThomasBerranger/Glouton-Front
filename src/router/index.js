@@ -21,12 +21,17 @@ const router = createRouter({
             meta: {requiresAuth: true}
         },
         {
+            path: "/login",
+            component: () => import("../views/Authentication/Login.vue"),
+        },
+        {
             path: "/register",
             component: () => import("../views/Authentication/Register.vue"),
         },
         {
-            path: "/login",
-            component: () => import("../views/Authentication/Login.vue"),
+            path: "/account",
+            component: () => import("../views/Authentication/Account.vue"),
+            meta: {requiresAuth: true}
         },
     ]
 })
