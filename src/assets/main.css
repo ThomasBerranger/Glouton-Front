@@ -5,6 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 
-html, * {
-    font-family: 'Tsukimi Rounded', 'sans-serif';
+@tailwind components;
+
+@layer components {
+    .router-link-active {
+        @apply text-gray-600;
+    }
 }

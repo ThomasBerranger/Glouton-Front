@@ -23,18 +23,12 @@ import HelloWorld from './components/HelloWorld.vue';
 
   <footer class="fixed bottom-0 w-full pb-4">
     <div class="flex justify-evenly">
-      <RouterLink to="/">
-        <font-awesome-icon icon="fa-solid fa-utensils" class="text-2xl text-gray-400"/>
+      <RouterLink to="/" class="text-2xl text-gray-400">
+        <font-awesome-icon icon="fa-solid fa-utensils"/>
       </RouterLink>
-      <RouterLink to="/account">
-        <font-awesome-icon icon="fa-solid fa-cart-shopping" class="text-2xl text-gray-400"/>
+      <RouterLink to="/account" class="text-2xl text-gray-400">
+        <font-awesome-icon icon="fa-solid fa-cart-shopping"/>
       </RouterLink>
     </div>
   </footer>
 </template>
-
-<style scoped lang="scss">
-a.router-link-active > svg {
-  @extend .text-gray-500;
-}
-</style>
