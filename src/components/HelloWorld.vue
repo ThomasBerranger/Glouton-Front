@@ -8,14 +8,11 @@ defineProps({
 </script>
 
 <template>
-  <h1 class="font-title font-bold">{{ msg }}</h1>
+  <div class="w-full flex justify-between items-baseline px-4">
+    <h1 class="font-title font-bold text-4xl mt-2">{{ msg }}</h1>
+    <font-awesome-icon icon="fa-solid fa-barcode" class="text-3xl text-gray-600"/>
+  </div>
 </template>
 
 <style scoped>
-
-h1 {
-  width: 100vw;
-  text-align: center;
-  font-size: 2.6rem;
-}
 </style>

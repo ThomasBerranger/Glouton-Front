@@ -6,10 +6,18 @@ import router from './router'
 import firebase from "firebase/compat/app";
 import firebaseConfig from "./config/firebase";
 
+import {library} from '@fortawesome/fontawesome-svg-core'
+import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
+import {faBarcode, faCartShopping, faUtensils} from '@fortawesome/free-solid-svg-icons'
+
+library.add(faBarcode, faCartShopping, faUtensils)
+
 firebase.initializeApp(firebaseConfig);
 
 const app = createApp(App)
 
 app.use(router)
+
+app.component('font-awesome-icon', FontAwesomeIcon)
 
 app.mount('#app')

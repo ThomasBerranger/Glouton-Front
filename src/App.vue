@@ -69,11 +69,14 @@ const navigation = {
 
   <RouterView/>
 
+
   <footer class="fixed bottom-0 w-full pb-4">
     <div class="flex justify-evenly">
-      <a v-for="item in navigation.social" :key="item.name" :href="item.href" class="text-gray-400 hover:text-gray-500">
-        <span class="sr-only">{{ item.name }}</span>
-        <component :is="item.icon" class="h-6 w-6" aria-hidden="true"/>
+      <a href="#" class="text-gray-500">
+        <font-awesome-icon icon="fa-solid fa-utensils" class="text-2xl text-gray-600"/>
+      </a>
+      <a href="#" class="text-gray-500">
+        <font-awesome-icon icon="fa-solid fa-cart-shopping" class="text-2xl text-gray-400"/>
       </a>
     </div>
   </footer>
