@@ -1,18 +1,17 @@
 <script setup>
 import {ref} from 'vue';
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import router from '@/router';
 
 const email = ref('');
 const password = ref('');
+
 const signIn = () => {
-  firebase
-      .auth()
-      .signInWithEmailAndPassword(email.value, password.value)
+  const auth = getAuth();
+
+  signInWithEmailAndPassword(auth, email.value, password.value)
       .then((data) => {
-        console.log('Successfully logged in!');
-        router.push('/about')
+        router.push('/')
       })
       .catch(error => {
         console.log(error.code)
@@ -32,18 +31,3 @@ const signIn = () => {
     </div>
   </div>
 </template>
-
-<style>
-@media (min-width: 1024px) {
-  .login {
-    min-height: 100vh;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .register-form > * {
-    margin: 2% 0 2% 0;
-  }
-}
-</style>

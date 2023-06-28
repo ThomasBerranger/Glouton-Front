@@ -1,14 +1,20 @@
 <script setup>
-import firebase from 'firebase/compat/app';
-import 'firebase/auth';
+import {getAuth, signOut} from 'firebase/auth';
+import router from "@/router";
 
+const auth = getAuth();
+
+const logout = () => {
+  signOut(auth).then(() => router.push('/'));
+}
 </script>
 
 <template>
   <div class="login">
     <div class="account">
       <h1>Mon compte</h1>
-      <p>{{ firebase.auth().currentUser.email }}</p>
+      <p>{{ auth.currentUser.email }}</p>
+      <button @click="logout">Logout</button>
     </div>
   </div>
 </template>

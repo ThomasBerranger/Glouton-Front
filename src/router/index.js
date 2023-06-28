@@ -1,7 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import firebase from 'firebase/compat/app';
-import 'firebase/auth';
+import {getAuth, signOut} from 'firebase/auth';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,13 +31,13 @@ const router = createRouter({
             path: "/account",
             component: () => import("../views/Authentication/Account.vue"),
             meta: {requiresAuth: true}
-        },
+        }
     ]
 })
 
 router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    const currentUser = firebase.auth().currentUser;
+    const currentUser = getAuth().currentUser;
 
     if (requiresAuth && !currentUser) {
         next('/login');
