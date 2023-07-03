@@ -2,6 +2,7 @@
 import {ref} from 'vue';
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import router from '@/router';
+import AuthenticationLinks from "@/components/AuthenticationLinks.vue";
 
 const email = ref('');
 const password = ref('');
@@ -20,6 +21,8 @@ const signIn = () => {
 </script>
 
 <template>
+  <AuthenticationLinks />
+
   <div class="login">
     <div class="register-form">
       <h1>Login to Your Account</h1>

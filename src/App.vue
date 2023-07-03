@@ -7,13 +7,6 @@ import HelloWorld from './components/HelloWorld.vue';
   <header>
     <div class="wrapper">
       <HelloWorld msg="Glouton"/>
-
-      <nav style="padding: 20px">
-        <RouterLink to="/login" class="underline">Login</RouterLink>
-        <br>
-        <RouterLink to="/register" class="underline">Register</RouterLink>
-      </nav>
-
     </div>
   </header>
 
