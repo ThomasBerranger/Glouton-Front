@@ -14,7 +14,7 @@ import HelloWorld from './components/HelloWorld.vue';
   <RouterView />
 
 
-  <footer class="fixed bottom-0 w-full pb-4">
+  <footer class="fixed bottom-0 w-full pb-4 bg-white">
     <div class="flex justify-evenly">
       <RouterLink to="/" class="text-2xl text-gray-400">
         <font-awesome-icon icon="fa-solid fa-utensils"/>
