@@ -1,15 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import router from '@/router';
 import {Html5QrcodeScanner} from 'html5-qrcode';
 import axios from "axios";
-
-const logout = () => {
-  firebase.auth().signOut()
-  router.push('/')
-}
 
 let productImageUrl = ref('');
 
@@ -47,7 +39,6 @@ function findScannedArticle(decodedText) {
     <div>
       <h1>Scan or logout</h1>
       <div id="qrCodeScanner"></div>
-      <button @click="logout">You can log out here</button>
       <br>
       <img :src="productImageUrl" alt="product image">
     </div>

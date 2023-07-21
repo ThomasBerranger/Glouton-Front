@@ -6,9 +6,3 @@
 @tailwind utilities;
 
 @tailwind components;
-
-@layer components {
-    .router-link-active {
-        @apply text-gray-600;
-    }
-}

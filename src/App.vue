@@ -11,7 +11,7 @@ import HelloWorld from './components/HelloWorld.vue';
   </header>
 
 
-  <RouterView/>
+  <RouterView />
 
 
   <footer class="fixed bottom-0 w-full pb-4">

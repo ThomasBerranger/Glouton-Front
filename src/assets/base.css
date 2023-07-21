@@ -1,3 +1,15 @@
 * {
   font-family: 'Tsukimi Rounded', 'sans-serif';
 }
+
+body, #app {
+  height: 100vh;
+}
+
+main {
+  height: 95vh;
+}
+
+footer {
+  height: 5vh;
+}
