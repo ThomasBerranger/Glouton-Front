@@ -22,14 +22,14 @@ const onSubmit = () => {
 
 <template>
 
-  <main class="flex flex-1 flex-col justify-center px-8 pb-20">
+  <div class="w-screen h-full flex flex-1 flex-col justify-center">
 
-    <div class="mx-auto w-full max-w-sm">
+    <div class="w-full">
       <img class="mx-auto h-20 w-auto" src="/public/logo.webp" alt="Your Company"/>
       <h2 class="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Connexion</h2>
     </div>
 
-    <div class="mt-8 mx-auto w-full max-w-sm">
+    <div class="w-full px-4 mt-3">
       <form @submit.prevent="onSubmit" class="space-y-6">
         <div>
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
@@ -62,6 +62,6 @@ const onSubmit = () => {
       </form>
     </div>
 
-  </main>
+  </div>
 
 </template>

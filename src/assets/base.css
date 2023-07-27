@@ -2,14 +2,26 @@
   font-family: 'Tsukimi Rounded', 'sans-serif';
 }
 
-body, #app {
-  height: 100vh;
+body {
+  /*height: 100vh;*/
+  /*padding: 0;*/
+}
+
+header {
+  z-index: 1;
+  position: fixed;
+  height: 5vh;
 }
 
 main {
-  height: 95vh;
+  position: absolute;
+  top: 5vh;
+  height: 90vh;
 }
 
 footer {
+  z-index: 1;
+  position: fixed;
+  bottom: 0;
   height: 5vh;
 }
