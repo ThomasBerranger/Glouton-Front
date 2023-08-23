@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router';
 import HomeView from '../views/Home.vue';
-import {getAuth} from 'firebase/auth';
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,15 +40,30 @@ const router = createRouter({
     ]
 })
 
-router.beforeEach((to, from, next) => {
-    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    const currentUser = getAuth().currentUser;
+router.beforeEach(async (to, from, next) => {
 
-    if (requiresAuth && !currentUser) {
-        next('/login');
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        try {
+            const user = await new Promise((resolve, reject) => {
+                const unsubscribe = onAuthStateChanged(getAuth(), (user) => {
+                    unsubscribe();
+                    resolve(user);
+                }, reject);
+            });
+
+            if (!user) {
+                next('/login');
+            } else {
+                next();
+            }
+        } catch (error) {
+            console.error("Une erreur s'est produite lors de la vérification de l'authentification :", error);
+            next('/login');
+        }
     } else {
         next();
     }
+
 });
 
 export default router
