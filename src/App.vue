@@ -5,7 +5,7 @@ import {RouterLink, RouterView} from 'vue-router';
 <template>
   <header class="w-full flex justify-between items-center px-4 bg-white">
     <h1 class="font-title font-bold text-3xl text-green-800">Glouton</h1>
-    <RouterLink to="/about">
+    <RouterLink to="/scan">
       <font-awesome-icon icon="fa-solid fa-barcode" class="text-3xl text-gray-600"/>
     </RouterLink>
   </header>
