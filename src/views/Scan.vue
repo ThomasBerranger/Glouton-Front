@@ -1,9 +1,14 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {Html5QrcodeScanner} from 'html5-qrcode';
+import {getAuth} from 'firebase/auth';
+import {getApp} from "firebase/app";
+import {getFirestore, doc, collection, addDoc} from 'firebase/firestore';
 import axios from "axios";
 import {Datepicker, initTE, Input} from "tw-elements";
 import ScoreValue from "@/components/ScoreValue.vue";
+
+const db = getFirestore(getApp());
 
 const productFound = ref(false);
 const product = ref({
@@ -23,9 +28,12 @@ onMounted(() => {
       {
         fps: 10,
         qrbox: 250,
-      }
+      },
+      false
   );
-  html5QrcodeScanner.render(onScanSuccess);
+  html5QrcodeScanner.render(onScanSuccess, (error) => {
+    console.error(error)
+  });
 
   initTE({Datepicker, Input});
 
@@ -55,6 +63,16 @@ function onScanSuccess(decodedText, decodedResult) {
       })
       .catch(error => console.log(error));
 }
+
+function saveProduct() {
+  addDoc(collection(db, 'products'), {
+    code: product.value.code,
+    user: getAuth().currentUser.uid,
+    name: product.value.name,
+    expirationDate: expirationDate.value,
+    image: imageSelected.value,
+  });
+}
 </script>
 
 <template>
@@ -64,12 +82,13 @@ function onScanSuccess(decodedText, decodedResult) {
     <div class="w-screen p-5">
       <div class="mb-5 text-center text-lg">{{ product.name }}</div>
 
-      <h2 v-show="Object.keys(product.imageUrls).length > 1" :class="{'text-rose-600 font-medium': !imageSelected}">Choisissez une image</h2>
+      <h2 v-show="Object.keys(product.imageUrls).length > 1" :class="{'text-rose-600 font-medium': !imageSelected}">
+        Choisissez une image</h2>
       <div :class="Object.keys(product.imageUrls).length > 1 ? 'justify-between' : 'justify-center'"
            class="flex flex-wrap mt-2">
-        <div class="w-32 flex mb-5" v-for="(imageUrl, index) in product.imageUrls" :key="index">
-          <img :src="imageUrl" @click="imageSelected = index"
-               :class="{'border-4 border-green-700' : imageSelected === index}" class="self-center rounded-md"
+        <div class="w-24 flex mb-5" v-for="imageUrl in product.imageUrls">
+          <img :src="imageUrl" @click="imageSelected = imageUrl"
+               :class="{'border-4 border-green-700' : imageSelected === imageUrl}" class="self-center rounded-md"
                alt="product picture">
         </div>
       </div>
@@ -106,7 +125,7 @@ function onScanSuccess(decodedText, decodedResult) {
       <div class="mt-5 text-center">{{ product.description }}</div>
 
       <div class="text-center">
-        <button type="button"
+        <button type="button" @click="saveProduct"
                 class="rounded bg-white mt-5 px-4 py-2 text-md font-semibold text-gray-900 shadow ring-1 ring-inset ring-gray-300">
           Ajouter
         </button>
@@ -118,4 +137,12 @@ function onScanSuccess(decodedText, decodedResult) {
 </template>
 
 <style>
+#qrCodeScanner {
+  width: 90vw;
+  margin: 10vh 5vw 0 5vw !important;
+}
+
+#qrCodeScanner img {
+  margin: auto;
+}
 </style>

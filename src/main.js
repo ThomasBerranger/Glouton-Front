@@ -4,7 +4,7 @@ import {createApp} from 'vue';
 import App from './App.vue';
 import router from './router';
 import { initializeApp } from "firebase/app";
-import firebaseConfig from './config/firebase'
+import firebaseConfig from './config/firebase';
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
 import {faBarcode, faCartShopping, faUtensils} from '@fortawesome/free-solid-svg-icons';
