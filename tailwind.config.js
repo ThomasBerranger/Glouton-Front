@@ -7,7 +7,7 @@ module.exports = {
     ],
     theme: {
         fontFamily: {
-            title: ['Moirai One', 'cursive'],
+            title: ['MuseoModerno', 'cursive'],
         },
         extend: {},
     },
