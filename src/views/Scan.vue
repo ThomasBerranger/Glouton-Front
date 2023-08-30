@@ -1,5 +1,6 @@
 <script setup>
 import {onMounted, ref} from "vue";
+import router from "@/router";
 import {Html5QrcodeScanner} from 'html5-qrcode';
 import {getAuth} from 'firebase/auth';
 import {getApp} from "firebase/app";
@@ -64,13 +65,17 @@ function onScanSuccess(decodedText, decodedResult) {
       .catch(error => console.log(error));
 }
 
-function saveProduct() {
-  addDoc(collection(db, 'products'), {
+async function saveProduct() {
+  await addDoc(collection(db, 'products'), {
     code: product.value.code,
     user: getAuth().currentUser.uid,
     name: product.value.name,
     expirationDate: expirationDate.value,
     image: imageSelected.value,
+  }).then((data) => {
+    router.push('/');
+  }).catch((error) => {
+    console.log(error);
   });
 }
 </script>
