@@ -2,7 +2,6 @@
 import {onMounted, ref} from "vue";
 import {collection, query, where, getDocs, getFirestore} from "firebase/firestore";
 import {getApp} from "firebase/app";
-import {getAuth} from "firebase/auth";
 import ProductSmallDisplay from "@/components/ProductSmallDisplay.vue";
 
 const products = ref([]);
@@ -19,5 +18,9 @@ onMounted(async () => {
 </script>
 
 <template>
+  <div class="flex justify-around items-center mt-5 mb-3">
+    <h1 class="text-md">Mon garde manger</h1>
+  </div>
+
   <ProductSmallDisplay v-for="product in products" :product="product"/>
 </template>

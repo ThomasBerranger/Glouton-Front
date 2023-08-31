@@ -8,6 +8,7 @@ import {getFirestore, doc, collection, addDoc} from 'firebase/firestore';
 import axios from "axios";
 import {Datepicker, initTE, Input} from "tw-elements";
 import ScoreValue from "@/components/ScoreValue.vue";
+import format from "@/helpers/date";
 
 const db = getFirestore(getApp());
 
@@ -16,11 +17,11 @@ const product = ref({
   code: '',
   name: '',
   description: '',
-  imageUrls: '',
+  image: '',
   nutriscore: '',
   ecoscore: ''
 });
-const imageSelected = ref('');
+const availableImages = ref(null);
 const expirationDate = ref(null);
 
 onMounted(() => {
@@ -55,7 +56,13 @@ function onScanSuccess(decodedText, decodedResult) {
         productFound.value = true;
 
         product.value.code = decodedText;
-        product.value.imageUrls = response.data.product.selected_images.front.display;
+
+        if (Object.keys(response.data.product.selected_images.front.display).length < 2) {
+          product.value.image = Object.values(response.data.product.selected_images.front.display)[0];
+        } else {
+          availableImages.value = response.data.product.selected_images.front.display;
+        }
+
         product.value.name = response.data.product.product_name;
         product.value.description = response.data.product.generic_name_fr;
         product.value.nutriscore = response.data.product.nutriscore_score;
@@ -70,8 +77,8 @@ async function saveProduct() {
     code: product.value.code,
     user: getAuth().currentUser.uid,
     name: product.value.name,
-    expirationDate: expirationDate.value,
-    image: imageSelected.value,
+    expirationDate: format(expirationDate.value),
+    image: product.value.image,
   }).then((data) => {
     router.push('/');
   }).catch((error) => {
@@ -87,14 +94,14 @@ async function saveProduct() {
     <div class="w-screen p-5">
       <div class="mb-5 text-center text-lg">{{ product.name }}</div>
 
-      <h2 v-show="Object.keys(product.imageUrls).length > 1" :class="{'text-rose-600 font-medium': !imageSelected}">
-        Choisissez une image</h2>
-      <div :class="Object.keys(product.imageUrls).length > 1 ? 'justify-between' : 'justify-center'"
+      <h2 v-show="availableImages">Choisissez une image</h2>
+      <div :class="availableImages ? 'justify-between' : 'justify-center'"
            class="flex flex-wrap mt-2">
-        <div class="w-24 flex mb-5" v-for="imageUrl in product.imageUrls">
-          <img :src="imageUrl" @click="imageSelected = imageUrl"
-               :class="{'border-4 border-green-700' : imageSelected === imageUrl}" class="self-center rounded-md"
-               alt="product picture">
+        <div v-if="availableImages" class="w-24 flex mb-5" v-for="imageUrl in availableImages">
+          <img :src="imageUrl" @click="product.image = imageUrl" :class="{'border-4 border-green-700' : product.image === imageUrl}" class="self-center rounded-md" alt="product picture">
+        </div>
+        <div v-else class="w-24 flex mb-5">
+          <img :src="product.image" class="self-center rounded-md" alt="product picture">
         </div>
       </div>
 
