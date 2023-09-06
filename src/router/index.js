@@ -19,21 +19,26 @@ const router = createRouter({
             meta: {requiresAuth: true}
         },
         {
-            path: "/login",
-            component: () => import("@/views/Authentication/Login.vue"),
+            path: '/login',
+            component: () => import('@/views/Authentication/Login.vue'),
         },
         {
-            path: "/register",
-            component: () => import("@/views/Authentication/Register.vue"),
+            path: '/register',
+            component: () => import('@/views/Authentication/Register.vue'),
         },
         {
-            path: "/account",
-            component: () => import("@/views/Authentication/Account.vue"),
+            path: '/account',
+            component: () => import('@/views/Authentication/Account.vue'),
             meta: {requiresAuth: true}
         },
         {
-            path: "/:catchAll(.*)",
-            component: () => import("@/views/NotFound.vue"),
+            path: '/product/:id',
+            component: () => import('@/views/Product.vue'),
+            meta: {requiresAuth: true}
+        },
+        {
+            path: '/:catchAll(.*)',
+            component: () => import('@/views/NotFound.vue'),
         }
     ]
 })

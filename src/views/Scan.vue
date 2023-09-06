@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import router from "@/router";
 import {Html5QrcodeScanner} from 'html5-qrcode';
 import {getAuth} from 'firebase/auth';
@@ -23,6 +23,7 @@ const product = ref({
 });
 const availableImages = ref(null);
 const expirationDate = ref(null);
+const productDescription = computed(() => product.value.description.charAt(0).toUpperCase() + product.value.description.slice(1).toLowerCase())
 
 onMounted(() => {
   const html5QrcodeScanner = new Html5QrcodeScanner(
@@ -67,7 +68,6 @@ function onScanSuccess(decodedText, decodedResult) {
         product.value.description = response.data.product.generic_name_fr;
         product.value.nutriscore = response.data.product.nutriscore_score;
         product.value.ecoscore = response.data.product.ecoscore_score;
-        // product.value.nutriscore_grade = response.data.product.nutrition_grade_fr;
       })
       .catch(error => console.log(error));
 }
@@ -134,7 +134,7 @@ async function saveProduct() {
         </div>
       </div>
 
-      <div class="mt-5 text-center">{{ product.description }}</div>
+      <div class="mt-5 text-center">{{ productDescription }}</div>
 
       <div class="text-center">
         <button type="button" @click="saveProduct"

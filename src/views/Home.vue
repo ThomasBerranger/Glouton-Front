@@ -4,7 +4,7 @@ import {collection, query, where, getDocs, getFirestore} from "firebase/firestor
 import {getApp} from "firebase/app";
 import ProductSmallDisplay from "@/components/ProductSmallDisplay.vue";
 
-const products = ref([]);
+const products = ref({});
 
 const db = getFirestore(getApp());
 // const q = query(collection(db, "products"), where("products", "==", getAuth().currentUser.uid));
@@ -12,7 +12,7 @@ const db = getFirestore(getApp());
 onMounted(async () => {
   const querySnapshot = await getDocs(collection(db, "products"))
   querySnapshot.forEach((doc) => {
-    products.value.push(doc.data());
+    products.value[doc.id] = {...doc.data(), ...{id: doc.id}};
   });
 });
 </script>
