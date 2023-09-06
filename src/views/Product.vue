@@ -1,14 +1,14 @@
 <script setup>
 import {useRoute} from "vue-router";
 import {onMounted, ref} from "vue";
-import {doc, getDoc, getFirestore, updateDoc} from "firebase/firestore";
+import {doc, getDoc, getFirestore, updateDoc, deleteDoc} from "firebase/firestore";
 import {getApp} from "firebase/app";
+import router from "@/router";
 
 const db = getFirestore(getApp());
 const route = useRoute();
 
 let productId = ref('');
-let productLoaded = ref(false);
 let product = ref({});
 
 productId = route.params.id;
@@ -18,8 +18,6 @@ onMounted(async () => {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data());
-    productLoaded.value = true;
     product.value = docSnap.data();
   } else {
     console.log("No such document!");
@@ -35,10 +33,16 @@ async function editProduct() {
     console.log("updated");
   })
 }
+
+async function deleteProduct() {
+  await deleteDoc(doc(db, 'products', productId)).then(() => {
+    router.push('/')
+  });
+}
 </script>
 
 <template>
-  <div v-if="!productLoaded" class="text-center w-screen mt-5">
+  <div v-if="Object.keys(product).length === 0" class="text-center w-screen mt-5">
     <p>En cours de chargement</p>
   </div>
   <div v-else class="w-screen">
@@ -48,8 +52,10 @@ async function editProduct() {
     <hr class="w-3/4 mx-auto my-5">
     <div class="flex justify-around">
       <button class="rounded-md bg-indigo-300 px-2.5 py-1.5 text-sm font-medium text-white shadow-sm">Ajouter</button>
-      <button @click="editProduct" class="rounded-md bg-green-600 px-2.5 py-1.5 text-sm font-medium text-white shadow-sm">Modifier</button>
-      <button class="rounded-md bg-red-400 px-2.5 py-1.5 text-sm font-medium text-white shadow-sm">Retirer</button>
+      <button @click="editProduct"
+              class="rounded-md bg-green-600 px-2.5 py-1.5 text-sm font-medium text-white shadow-sm">Modifier
+      </button>
+      <button @click="deleteProduct" class="rounded-md bg-red-400 px-2.5 py-1.5 text-sm font-medium text-white shadow-sm">Retirer</button>
     </div>
   </div>
 </template>
