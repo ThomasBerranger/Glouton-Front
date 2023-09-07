@@ -11,7 +11,7 @@ const props = defineProps(['product']);
       <img :src="product.image !== '' ? product.image : '/public/logo.webp'" class="w-14" alt="product image">
       <div class="flex-col truncate">
         <p class="pl-3 text-lg truncate">{{ product.name }}</p>
-        <p class="pl-3 text-xs font-light">
+        <p class="pl-3 text-xs font-medium">
           <ExpirationDateHumanDisplay :expiration-date="product.expirationDate"/>
         </p>
       </div>

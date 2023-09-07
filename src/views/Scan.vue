@@ -8,7 +8,7 @@ import {getFirestore, doc, collection, addDoc} from 'firebase/firestore';
 import axios from "axios";
 import {Datepicker, initTE, Input} from "tw-elements";
 import ScoreValue from "@/components/ScoreValue.vue";
-import format from "@/helpers/date";
+import {format} from "@/helpers/date";
 
 const db = getFirestore(getApp());
 
@@ -98,7 +98,9 @@ async function saveProduct() {
       <div :class="availableImages ? 'justify-between' : 'justify-center'"
            class="flex flex-wrap mt-2">
         <div v-if="availableImages" class="w-24 flex mb-5" v-for="imageUrl in availableImages">
-          <img :src="imageUrl" @click="product.image = imageUrl" :class="{'border-4 border-green-700' : product.image === imageUrl}" class="self-center rounded-md" alt="product picture">
+          <img :src="imageUrl" @click="product.image = imageUrl"
+               :class="{'border-4 border-green-700' : product.image === imageUrl}" class="self-center rounded-md"
+               alt="product picture">
         </div>
         <div v-else class="w-24 flex mb-5">
           <img :src="product.image" class="self-center rounded-md" alt="product picture">

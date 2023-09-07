@@ -95,7 +95,6 @@ async function deleteProduct() {
         </label>
       </div>
 
-
       <hr class="w-2/3 mx-auto my-5">
 
       <div class="w-screen text-center">
