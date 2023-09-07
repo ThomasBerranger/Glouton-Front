@@ -97,7 +97,9 @@ async function deleteProduct() {
 
       <hr class="w-2/3 mx-auto my-5">
 
-      <div class="w-screen text-center">
+      <div class="w-screen flex justify-around">
+        <button @click="router.push('/')" class="rounded-md bg-green-600 px-2.5 py-1.5 text-sm font-medium text-white shadow-sm">Retour</button>
+
         <EatButton @click="deleteProduct"/>
       </div>
     </div>
