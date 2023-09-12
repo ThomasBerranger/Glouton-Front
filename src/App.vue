@@ -3,12 +3,9 @@ import {RouterLink, RouterView} from 'vue-router';
 </script>
 
 <template>
-  <header class="w-full flex justify-between items-center px-4 bg-white">
+  <header class="w-full flex justify-center items-center px-4 bg-white shadow-md">
     <RouterLink to="/">
-      <h1 class="font-title font-extralight italic text-4xl text-green-800">Glouton</h1>
-    </RouterLink>
-    <RouterLink to="/scan">
-      <font-awesome-icon icon="fa-solid fa-barcode" class="text-3xl text-gray-600"/>
+      <h1 class="font-title font-extralight italic text-4xl">Glouton</h1>
     </RouterLink>
   </header>
 
@@ -18,11 +15,16 @@ import {RouterLink, RouterView} from 'vue-router';
   </main>
 
 
-  <footer class="w-full bg-white flex justify-evenly items-center">
-    <RouterLink to="/" class="text-2xl text-gray-400">
+  <footer class="w-full flex justify-evenly items-center footer-background border-t-2 border-white">
+    <RouterLink to="/" class="text-2xl text-white">
       <font-awesome-icon icon="fa-solid fa-utensils"/>
     </RouterLink>
-    <RouterLink to="/account" class="text-2xl text-gray-400">
+
+    <RouterLink to="/scan" class="px-5 py-2 rounded-3xl mb-12 footer-background border-2 border-white">
+      <font-awesome-icon icon="fa-solid fa-barcode" class="text-3xl text-white"/>
+    </RouterLink>
+
+    <RouterLink to="/account" class="text-2xl text-white">
       <font-awesome-icon icon="fa-solid fa-cart-shopping"/>
     </RouterLink>
   </footer>

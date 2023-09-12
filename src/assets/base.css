@@ -10,18 +10,28 @@ body {
 header {
   z-index: 1;
   position: fixed;
-  height: 5vh;
+  height: 7vh;
+  color: #27ae60;
 }
 
 main {
   position: absolute;
-  top: 5vh;
-  height: 90vh;
+  top: 7vh;
+  padding-bottom: 9vh;
 }
 
 footer {
   z-index: 1;
   position: fixed;
   bottom: 0;
-  height: 5vh;
+  height: 6vh;
+}
+
+.footer-background {
+  background-color: #27ae60;
+}
+
+.product-image {
+  max-height: 6rem;
+  max-width: 6rem;
 }

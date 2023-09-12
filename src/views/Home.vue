@@ -20,9 +20,5 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex justify-around items-center mt-5 mb-3">
-    <h1 class="text-md">Mon garde manger</h1>
-  </div>
-
   <ProductSmallDisplay v-for="product in products" :product="product"/>
 </template>
