@@ -20,5 +20,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ProductSmallDisplay v-for="product in products" :product="product"/>
+  <div v-if="Object.keys(products).length === 0" class="w-screen h-full flex flex-1 flex-col justify-center">
+
+    <div class="w-full">
+      <img class="mx-auto h-40 w-auto animate-bounce" src="/public/logo.png" alt="Your Company"/>
+      <h2 class="mt-5 text-center leading-9 tracking-tight text-gray-900">Garde manger en cours de chargement</h2>
+    </div>
+
+  </div>
+
+  <ProductSmallDisplay v-else v-for="product in products" :product="product"/>
 </template>

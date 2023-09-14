@@ -26,7 +26,7 @@ const onSubmit = () => {
 
     <div class="w-full">
       <img class="mx-auto h-20 w-auto" src="/public/logo.webp" alt="Your Company" />
-      <h2 class="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Création de compte</h2>
+      <h2 class="mt-5 text-center text-2xl leading-9 tracking-tight text-gray-900">Création de compte</h2>
     </div>
 
     <div class="w-full px-4 mt-3">

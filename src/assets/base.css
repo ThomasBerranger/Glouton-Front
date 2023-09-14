@@ -18,6 +18,7 @@ main {
   position: absolute;
   top: 7vh;
   padding-bottom: 9vh;
+  height: 87vh;
 }
 
 footer {
@@ -32,6 +33,7 @@ footer {
 }
 
 .product-image {
-  max-height: 6rem;
-  max-width: 6rem;
+  height: 8vh;
+  width: auto;
+  /*max-height: 100%;*/
 }
