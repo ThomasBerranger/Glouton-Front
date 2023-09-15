@@ -47,6 +47,8 @@ async function editProduct() {
   await updateDoc(productRef, {
     name: product.value.name,
     expirationDate: format(product.value.expirationDate)
+  }).then(() => {
+    console.log(`Product ${product.value.name} edited !`)
   });
 }
 
@@ -58,52 +60,43 @@ async function deleteProduct() {
 </script>
 
 <template>
-
   <section class="grid min-h-full place-items-center">
 
-    <div v-show="Object.keys(product).length === 0" class="flex flex-wrap justify-center">
-      <img class="mx-auto h-40 w-auto" src="/public/logo.webp" alt="Your Company"/>
-      <h1 class="mt-4 text-center text-2xl tracking-tight">En cours de chargement</h1>
-    </div>
+    <div v-show="Object.keys(product).length !== 0" class="w-screen">
 
+      <img class="h-60 mx-auto px-2" :src="product.image" :alt="product.name"/>
 
-    <div v-show="Object.keys(product).length !== 0" class="flex flex-wrap justify-center">
+      <div class="flex flex-wrap justify-center">
+        <label for="first-name" class="block w-3/4 mt-4 text-sm font-medium leading-6 text-gray-900">Nom du
+          produit</label>
+        <input type="text" name="name" id="name" placeholder="Nom de l'article" v-model="product.name"
+               @input="editProduct"
+               class="block w-3/4 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
 
-      <img class="h-60" :src="product.image" :alt="product.name"/>
+        <div class="relative mt-5 w-3/4" id="datepicker" data-te-input-wrapper-init @input="editProduct">
+          <input
+              v-model='product.expirationDate'
+              type="text"
+              :class="{'border-2 border-rose-600': !product.expirationDate}"
+              class="peer block min-h-[auto] w-full rounded bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+              data-te-datepicker-toggle-ref
+              data-te-datepicker-toggle-button-ref
+              data-te-input-state-active/>
+          <label
+              for="floatingInput"
+              class="font-medium pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary">
+            Date de péremption
+          </label>
+        </div>
 
-
-      <label for="first-name" class="block w-3/4 mt-4 text-sm font-medium leading-6 text-gray-900">Nom du
-        produit</label>
-      <input type="text" name="name" id="name" placeholder="Nom de l'article" v-model.lazy="product.name"
-             @input="editProduct"
-             class="block w-3/4 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
-
-
-      <div class="relative mt-5 w-3/4" id="datepicker" data-te-input-wrapper-init @input="editProduct">
-        <input
-            v-model='product.expirationDate'
-            type="text"
-            :class="{'border-2 border-rose-600': !product.expirationDate}"
-            class="peer block min-h-[auto] w-full rounded bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-            data-te-datepicker-toggle-ref
-            data-te-datepicker-toggle-button-ref
-            data-te-input-state-active/>
-        <label
-            for="floatingInput"
-            class="font-medium pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary">
-          Date de péremption
-        </label>
+        <hr class="w-2/3 mx-auto my-5">
       </div>
-
-      <hr class="w-2/3 mx-auto my-5">
 
       <div class="w-screen flex justify-around">
-        <button @click="router.push('/')" class="rounded-md bg-green-600 px-2.5 py-1.5 text-sm font-medium text-white shadow-sm">Retour</button>
-
         <EatButton @click="deleteProduct"/>
       </div>
-    </div>
 
+    </div>
 
   </section>
 </template>

@@ -22,7 +22,7 @@ const onSubmit = () => {
 
 <template>
 
-  <div class="w-screen h-full flex flex-1 flex-col justify-center">
+  <div class="w-screen screen-height flex flex-1 flex-col justify-center">
 
     <div class="w-full">
       <img class="mx-auto h-20 w-auto" src="/public/logo.webp" alt="Your Company" />
@@ -51,7 +51,7 @@ const onSubmit = () => {
           <button class="rounded-md bg-green-700 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm">
             Me créer un compte
           </button>
-          <RouterLink to="/login" class="text-sm font-semibold text-gray-900">Connexion <span
+          <RouterLink to="/login" class="text-sm text-gray-900">Connexion <span
               aria-hidden="true">&rarr;</span></RouterLink>
         </div>
       </form>

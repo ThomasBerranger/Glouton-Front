@@ -3,7 +3,7 @@ import {RouterLink} from "vue-router";
 </script>
 
 <template>
-  <div class="w-screen h-full flex flex-1 flex-col justify-center">
+  <div class="w-screen screen-height flex flex-1 flex-col justify-center animate-pulse pb-0">
 
     <div class="w-full">
       <img class="mx-auto h-40 w-auto" src="/public/logo.webp" alt="Your Company"/>

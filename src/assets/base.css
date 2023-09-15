@@ -17,8 +17,6 @@ header {
 main {
   position: absolute;
   top: 7vh;
-  padding-bottom: 9vh;
-  height: 87vh;
 }
 
 footer {
@@ -28,6 +26,10 @@ footer {
   height: 6vh;
 }
 
+.screen-height {
+  height: 87vh;
+}
+
 .footer-background {
   background-color: #27ae60;
 }
@@ -35,5 +37,4 @@ footer {
 .product-image {
   height: 8vh;
   width: auto;
-  /*max-height: 100%;*/
 }
