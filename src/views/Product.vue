@@ -51,9 +51,14 @@ async function editProduct() {
 }
 
 async function deleteProduct() {
-  await deleteDoc(doc(db, 'products', productId)).then(() => {
-    router.push('/')
+  const productRef = doc(db, "products", productId);
+
+  await updateDoc(productRef, {
+    finished: true,
   });
+  // await deleteDoc(doc(db, 'products', productId)).then(() => {
+  //   router.push('/')
+  // });
 }
 </script>
 

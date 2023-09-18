@@ -9,6 +9,8 @@ let products = ref([]);
 
 let weekCategoryClosed = ref(true);
 let monthCategoryClosed = ref(true);
+let otherCategoryClosed = ref(true);
+let finishedCategoryClosed = ref(true);
 let productsByCategory = ref({week: [], month: [], other: [], finished: []});
 
 const db = getFirestore(getApp());
@@ -23,6 +25,9 @@ onMounted(async () => {
     const remainingDays = Math.ceil(timeDifference / (24 * 60 * 60 * 1000));
 
     switch (true) {
+      case doc.data().finished:
+        productsByCategory.value.finished.push({...doc.data(), ...{id: doc.id}});
+        break;
       case remainingDays < 7:
         productsByCategory.value.week.push({...doc.data(), ...{id: doc.id}});
         break;
@@ -35,22 +40,18 @@ onMounted(async () => {
     }
   });
 
-  productsByCategory.value.week.sort((a, b) => {
-    return new Date(a.expirationDate) - new Date(b.expirationDate);
-  });
-  productsByCategory.value.month.sort((a, b) => {
-    return new Date(a.expirationDate) - new Date(b.expirationDate);
-  });
-  productsByCategory.value.other.sort((a, b) => {
-    return new Date(a.expirationDate) - new Date(b.expirationDate);
-  });
+  for (const key in productsByCategory.value) {
+    productsByCategory.value[key].sort((a, b) => {
+      return new Date(a.expirationDate) - new Date(b.expirationDate);
+    })
+  }
 });
 </script>
 
 <template>
   <div class="my-5 bg-white shadow">
     <div class="flex justify-between p-3 items-center w-screen" @click="weekCategoryClosed = !weekCategoryClosed">
-      <h2>Périmés dans la semaine <span class="text-xs">{{ productsByCategory.week.length }}</span></h2>
+      <h2>Périme dans la semaine <span class="text-xs font-medium small-indicator">{{ productsByCategory.week.length }}</span></h2>
       <font-awesome-icon v-if="weekCategoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>
       <font-awesome-icon v-else icon="fa-solid fa-chevron-up"></font-awesome-icon>
     </div>
@@ -79,7 +80,7 @@ onMounted(async () => {
 
   <div class="my-5 bg-white shadow">
     <div class="flex justify-between p-3 items-center w-screen" @click="monthCategoryClosed = !monthCategoryClosed">
-      <h2>Périmés dans le mois <span class="text-xs">{{ productsByCategory.month.length }}</span></h2>
+      <h2>Périme dans le mois <span class="text-xs font-bold small-indicator">{{ productsByCategory.month.length }}</span></h2>
       <font-awesome-icon v-if="monthCategoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>
       <font-awesome-icon v-else icon="fa-solid fa-chevron-up"></font-awesome-icon>
     </div>
@@ -107,14 +108,14 @@ onMounted(async () => {
   </div>
 
   <div class="my-5 bg-white shadow">
-    <div class="flex justify-between p-3 items-center w-screen" @click="monthCategoryClosed = !monthCategoryClosed">
-      <h2>Périmés dans longtemps <span class="text-xs">{{ productsByCategory.other.length }}</span></h2>
-      <font-awesome-icon v-if="monthCategoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>
+    <div class="flex justify-between p-3 items-center w-screen" @click="otherCategoryClosed = !otherCategoryClosed">
+      <h2>Périme dans longtemps <span class="text-xs font-bold small-indicator">{{ productsByCategory.other.length }}</span></h2>
+      <font-awesome-icon v-if="otherCategoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>
       <font-awesome-icon v-else icon="fa-solid fa-chevron-up"></font-awesome-icon>
     </div>
 
     <Transition mode="out-in">
-      <div v-if="monthCategoryClosed" class="relative overflow-auto px-3">
+      <div v-if="otherCategoryClosed" class="relative overflow-auto px-3">
         <div class="w-full flex gap-2 snap-x overflow-x-auto pb-5">
           <div v-for="product in productsByCategory.other" class="snap-start scroll-ml-6 shrink-0 relative">
 
@@ -128,6 +129,35 @@ onMounted(async () => {
       <div v-else class="w-screen flex flex-wrap px-2 pb-3">
 
         <RouterLink v-for="product in productsByCategory.other" :to="'/product/' + product.id">
+          <img class="relative h-20 px-1 mb-2" :src="product.image">
+        </RouterLink>
+
+      </div>
+    </Transition>
+  </div>
+
+  <div class="my-5 bg-white shadow">
+    <div class="flex justify-between p-3 items-center w-screen" @click="finishedCategoryClosed = !finishedCategoryClosed">
+      <h2>Terminé <span class="text-xs font-bold small-indicator">{{ productsByCategory.finished.length }}</span></h2>
+      <font-awesome-icon v-if="finishedCategoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>
+      <font-awesome-icon v-else icon="fa-solid fa-chevron-up"></font-awesome-icon>
+    </div>
+
+    <Transition mode="out-in">
+      <div v-if="finishedCategoryClosed" class="relative overflow-auto px-3">
+        <div class="w-full flex gap-2 snap-x overflow-x-auto pb-5">
+          <div v-for="product in productsByCategory.finished" class="snap-start scroll-ml-6 shrink-0 relative">
+
+            <RouterLink :to="'/product/' + product.id">
+              <img class="relative h-20 mx-auto" :src="product.image">
+            </RouterLink>
+
+          </div>
+        </div>
+      </div>
+      <div v-else class="w-screen flex flex-wrap px-2 pb-3">
+
+        <RouterLink v-for="product in productsByCategory.finished" :to="'/product/' + product.id">
           <img class="relative h-20 px-1 mb-2" :src="product.image">
         </RouterLink>
 

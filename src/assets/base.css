@@ -4,13 +4,13 @@
 
 body {
     background-color: rgb(242 201 76 / 10%);
+    color: #0e3b4c;
 }
 
 header {
     z-index: 1;
     position: fixed;
     height: 7vh;
-    color: #0e3b4c;
 }
 
 main {
@@ -23,7 +23,6 @@ footer {
     position: fixed;
     bottom: 0;
     height: 6vh;
-    color: #0e3b4c;
 
     -webkit-box-shadow: 0 -3px 6px -1px rgb(0 0 0 / 0.1);
     -moz-box-shadow: 0 -3px 6px -1px rgb(0 0 0 / 0.1);
@@ -36,6 +35,10 @@ footer {
 
 .footer-background {
     background-color: rgb(242 201 76);
+}
+
+.small-indicator {
+    color: rgb(242 201 76);
 }
 
 .product-image {
