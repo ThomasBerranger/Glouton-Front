@@ -1,40 +1,44 @@
 * {
-  font-family: 'Montserrat', 'sans-serif';
+    font-family: 'Montserrat', 'sans-serif';
 }
 
 body {
-  /*height: 100vh;*/
-  /*padding: 0;*/
+    background-color: rgb(242 201 76 / 10%);
 }
 
 header {
-  z-index: 1;
-  position: fixed;
-  height: 7vh;
-  color: #27ae60;
+    z-index: 1;
+    position: fixed;
+    height: 7vh;
+    color: #0e3b4c;
 }
 
 main {
-  position: absolute;
-  top: 7vh;
+    position: absolute;
+    top: 7vh;
 }
 
 footer {
-  z-index: 1;
-  position: fixed;
-  bottom: 0;
-  height: 6vh;
+    z-index: 1;
+    position: fixed;
+    bottom: 0;
+    height: 6vh;
+    color: #0e3b4c;
+
+    -webkit-box-shadow: 0 -3px 6px -1px rgb(0 0 0 / 0.1);
+    -moz-box-shadow: 0 -3px 6px -1px rgb(0 0 0 / 0.1);
+    box-shadow: 0 -3px 6px -1px rgb(0 0 0 / 0.1);
 }
 
 .screen-height {
-  height: 87vh;
+    height: 87vh;
 }
 
 .footer-background {
-  background-color: #27ae60;
+    background-color: rgb(242 201 76);
 }
 
 .product-image {
-  height: 8vh;
-  width: auto;
+    height: 8vh;
+    width: auto;
 }

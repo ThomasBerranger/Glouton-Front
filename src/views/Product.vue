@@ -47,8 +47,6 @@ async function editProduct() {
   await updateDoc(productRef, {
     name: product.value.name,
     expirationDate: format(product.value.expirationDate)
-  }).then(() => {
-    console.log(`Product ${product.value.name} edited !`)
   });
 }
 
