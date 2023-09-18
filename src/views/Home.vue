@@ -35,6 +35,15 @@ onMounted(async () => {
     }
   });
 
+  productsByCategory.value.week.sort((a, b) => {
+    return new Date(a.expirationDate) - new Date(b.expirationDate);
+  });
+  productsByCategory.value.month.sort((a, b) => {
+    return new Date(a.expirationDate) - new Date(b.expirationDate);
+  });
+  productsByCategory.value.other.sort((a, b) => {
+    return new Date(a.expirationDate) - new Date(b.expirationDate);
+  });
 });
 </script>
 
