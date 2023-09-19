@@ -63,9 +63,9 @@ async function deleteProduct() {
 </script>
 
 <template>
-  <section class="grid min-h-full place-items-center">
+  <section class="w-screen screen-height flex flex-1 flex-col justify-center">
 
-    <div v-show="Object.keys(product).length !== 0" class="w-screen">
+    <div v-show="Object.keys(product).length !== 0" class="bg-white py-6 shadow">
 
       <img class="h-60 mx-auto px-2" :src="product.image" :alt="product.name"/>
 

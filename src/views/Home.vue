@@ -49,7 +49,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="my-5 bg-white shadow">
+  <div class="my-6 bg-white shadow">
     <div class="flex justify-between p-3 items-center w-screen" @click="weekCategoryClosed = !weekCategoryClosed">
       <h2>Périme dans la semaine <span class="text-xs font-medium small-indicator">{{ productsByCategory.week.length }}</span></h2>
       <font-awesome-icon v-if="weekCategoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>
@@ -78,7 +78,7 @@ onMounted(async () => {
     </Transition>
   </div>
 
-  <div class="my-5 bg-white shadow">
+  <div class="my-6 bg-white shadow">
     <div class="flex justify-between p-3 items-center w-screen" @click="monthCategoryClosed = !monthCategoryClosed">
       <h2>Périme dans le mois <span class="text-xs font-bold small-indicator">{{ productsByCategory.month.length }}</span></h2>
       <font-awesome-icon v-if="monthCategoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>
@@ -107,7 +107,7 @@ onMounted(async () => {
     </Transition>
   </div>
 
-  <div class="my-5 bg-white shadow">
+  <div class="my-6 bg-white shadow">
     <div class="flex justify-between p-3 items-center w-screen" @click="otherCategoryClosed = !otherCategoryClosed">
       <h2>Périme dans longtemps <span class="text-xs font-bold small-indicator">{{ productsByCategory.other.length }}</span></h2>
       <font-awesome-icon v-if="otherCategoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>
@@ -136,7 +136,7 @@ onMounted(async () => {
     </Transition>
   </div>
 
-  <div class="my-5 bg-white shadow">
+  <div class="my-6 bg-white shadow">
     <div class="flex justify-between p-3 items-center w-screen" @click="finishedCategoryClosed = !finishedCategoryClosed">
       <h2>Terminé <span class="text-xs font-bold small-indicator">{{ productsByCategory.finished.length }}</span></h2>
       <font-awesome-icon v-if="finishedCategoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>

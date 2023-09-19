@@ -89,11 +89,11 @@ async function saveProduct() {
 </script>
 
 <template>
-  <div v-show="!productFound" id="qrCodeScanner"></div>
-  <div v-show="productFound">
+  <div v-show="!productFound" id="qrCodeScanner" class="bg-white shadow"></div>
+  <div v-show="productFound" class="bg-white mt-10 shadow">
 
     <div class="w-screen p-5">
-      <div class="mb-5 text-center text-lg">{{ product.name }}</div>
+      <div class="mb-5 text-center text-xl">{{ product.name }}</div>
 
       <h2 v-show="availableImages">Choisissez une image</h2>
       <div :class="availableImages ? 'justify-between' : 'justify-center'"
