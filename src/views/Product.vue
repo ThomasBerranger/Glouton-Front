@@ -54,11 +54,8 @@ async function deleteProduct() {
   const productRef = doc(db, "products", productId);
 
   await updateDoc(productRef, {
-    finished: true,
+    finishedAt: Date.now(),
   });
-  // await deleteDoc(doc(db, 'products', productId)).then(() => {
-  //   router.push('/')
-  // });
 }
 </script>
 

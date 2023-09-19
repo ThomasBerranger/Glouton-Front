@@ -79,7 +79,6 @@ async function saveProduct() {
     name: product.value.name,
     expirationDate: format(expirationDate.value),
     image: product.value.image,
-    finished: false,
   }).then((data) => {
     router.push('/');
   }).catch((error) => {
