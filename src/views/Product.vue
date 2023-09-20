@@ -46,6 +46,7 @@ async function editProduct() {
 
   await updateDoc(productRef, {
     name: product.value.name,
+    image: product.value.image,
     expirationDate: format(product.value.expirationDate)
   });
 }
@@ -63,7 +64,9 @@ async function deleteProduct() {
 <template>
   <section class="w-screen screen-height flex flex-1 flex-col justify-center">
 
-    <div v-show="Object.keys(product).length !== 0" class="bg-white py-6 shadow">
+    <div v-show="Object.keys(product).length !== 0" class="bg-white py-5 shadow">
+
+      <h1 class="text-2xl text-center">{{ product.name }}</h1>
 
       <img class="h-60 mx-auto px-2" :src="product.image" :alt="product.name"/>
 
@@ -73,6 +76,14 @@ async function deleteProduct() {
         <input type="text" name="name" id="name" placeholder="Nom de l'article" v-model="product.name"
                @input="editProduct"
                class="block w-3/4 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
+
+
+        <label for="image-url" class="block w-3/4 mt-4 text-sm font-medium leading-6 text-gray-900">Lien de
+          l'image</label>
+        <input type="text" name="image" id="image" placeholder="Lien de l'image" v-model="product.image"
+               @input="editProduct"
+               class="block w-3/4 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
+
 
         <div class="relative mt-5 w-3/4" id="datepicker" data-te-input-wrapper-init @input="editProduct">
           <input
