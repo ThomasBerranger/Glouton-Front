@@ -37,6 +37,11 @@ const router = createRouter({
             meta: {requiresAuth: true}
         },
         {
+            path: '/shopping-list',
+            component: () => import('@/views/ShoppingList.vue'),
+            meta: {requiresAuth: true}
+        },
+        {
             path: '/:catchAll(.*)',
             component: () => import('@/views/NotFound.vue'),
         }

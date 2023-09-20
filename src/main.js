@@ -7,11 +7,18 @@ import { initializeApp } from "firebase/app";
 import firebaseConfig from './config/firebase';
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome';
-import {faBarcode, faCartShopping, faChevronDown, faChevronUp, faUtensils} from '@fortawesome/free-solid-svg-icons';
+import {
+    faBarcode,
+    faCartShopping, faCheck,
+    faChevronDown,
+    faChevronUp,
+    faUser,
+    faUtensils, faXmark
+} from '@fortawesome/free-solid-svg-icons';
 
 initializeApp(firebaseConfig);
 
-library.add(faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp);
+library.add(faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faUser, faCheck, faXmark);
 
 const app = createApp(App);
 

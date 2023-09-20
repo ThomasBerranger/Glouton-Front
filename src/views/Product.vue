@@ -55,6 +55,7 @@ async function deleteProduct() {
 
   await updateDoc(productRef, {
     finishedAt: Date.now(),
+    toPurchase: true,
   });
 }
 </script>

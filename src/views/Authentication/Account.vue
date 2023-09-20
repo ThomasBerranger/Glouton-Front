@@ -10,26 +10,12 @@ const logout = () => {
 </script>
 
 <template>
-  <div class="login">
-    <div class="account">
-      <h1>Mon compte</h1>
-      <p>{{ auth.currentUser.email }}</p>
-      <button @click="logout">Logout</button>
+  <div class="w-screen screen-height flex flex-1 flex-col justify-center">
+    <div class="text-center bg-white shadow-md">
+      <h2 class="text-xl my-5">{{ auth.currentUser.email }}</h2>
+      <button @click="logout" class="mb-4 border-2 border-red-500 rounded py-1.5 px-3 font-medium text-red-500">
+        Logout
+      </button>
     </div>
   </div>
 </template>
-
-<style>
-@media (min-width: 1024px) {
-  .login {
-    min-height: 100vh;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .account > * {
-    margin: 2% 0 2% 0;
-  }
-}
-</style>
