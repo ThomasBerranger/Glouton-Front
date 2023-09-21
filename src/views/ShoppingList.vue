@@ -4,7 +4,6 @@ import {collection, doc, getDocs, getFirestore, query, updateDoc, where} from "f
 import {getApp} from "firebase/app";
 import {getAuth} from "firebase/auth";
 import {RouterLink} from "vue-router";
-import {format} from "@/helpers/date";
 
 const products = ref([]);
 
