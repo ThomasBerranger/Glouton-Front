@@ -123,45 +123,57 @@ function changeMonth(newMonthSameYear, next = true) {
           </div>
         </div>
 
-        <div v-show="!showMonths && !showYears" class="grid grid-cols-7 text-center text-xs leading-6 text-gray-500">
-          <p v-for="day in days" :key="day">{{ day }}</p>
-        </div>
+        <Transition mode="out-in">
+          <div v-if="!showMonths && !showYears" class="grid grid-cols-7 text-center text-xs">
+            <p v-for="day in days" :key="day">{{ day }}</p>
 
-        <div v-show="!showMonths && !showYears" class="mt-2 grid grid-cols-7 text-center text-sm">
-          <div v-for="(day, dayIdx) in calendar" :key="day.date"
-               :class="[dayIdx > 6 && 'border-t border-gray-200', 'py-2']">
-            <button type="button" class="mx-auto flex h-8 w-8 items-center justify-center"
-                    :class="[
-                  day.selected && day.currentDay && 'rounded-full bg-indigo-600 font-semibold text-white',
-                  day.selected && 'rounded-full bg-gray-900 font-semibold text-white',
+            <div v-for="(day, dayIdx) in calendar" :key="day.date"
+                 :class="[dayIdx > 6 && 'border-t border-gray-200', 'py-2']">
+              <button type="button" class="mx-auto flex h-8 w-8 items-center justify-center"
+                      :class="[
+                  day.selected && day.currentDay && 'rounded-full bg-red-500 text-red-900',
+                  day.selected && 'rounded-full bg-red-400 font-semibold text-white',
                   day.currentDay && 'text-indigo-600 font-bold',
                   !day.currentDay && !day.selected && day.selectedMonth && 'text-gray-900',
                   !day.currentDay && !day.selected && !day.selectedMonth && 'text-gray-400',
                 ]"
-                    @click="$emit('updateDate', day.date)">
-              {{ day.dayNumber }}
-            </button>
+                      @click="$emit('updateDate', day.date)">
+                {{ day.dayNumber }}
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div v-show="showMonths" class="mt-2 grid grid-cols-3 gap-2 px-2 text-center text-sm">
-          <div v-for="(month, monthNumber) in months" :key="month" class="my-2 py-2 rounded-lg ring-inset"
-               :class="[selectedMonth.number === parseInt(monthNumber) ? 'ring-2 ring-indigo-600' : 'ring-1 ring-gray-300']"
-               @click="changeMonth(monthNumber)">
-            {{ month }}
+          <div v-else-if="showMonths" class="mt-2 grid grid-cols-3 gap-2 px-2 text-center text-sm">
+            <div v-for="(month, monthNumber) in months" :key="month" class="my-2 py-2 rounded-lg ring-inset"
+                 :class="[selectedMonth.number === parseInt(monthNumber) ? 'ring-2 ring-indigo-600' : 'ring-1 ring-gray-300']"
+                 @click="changeMonth(monthNumber)">
+              {{ month }}
+            </div>
           </div>
-        </div>
 
-        <div v-show="showYears" class="mt-1 text-center text-lg h-60 overflow-auto">
-          <ul>
-            <li v-for="year in selectableYears" :key="year" @click="changeYear(year)" class="py-0.5"
-                :class="{'font-bold text-indigo-600' : year === selectedYear}">{{ year }}
-            </li>
-          </ul>
-        </div>
+          <div v-else-if="showYears" class="mt-1 text-center text-lg h-60 overflow-auto">
+            <ul>
+              <li v-for="year in selectableYears" :key="year" @click="changeYear(year)" class="py-0.5"
+                  :class="{'font-bold text-indigo-600' : year === selectedYear}">{{ year }}
+              </li>
+            </ul>
+          </div>
+        </Transition>
 
       </div>
 
     </div>
   </section>
 </template>
+
+<style>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>

@@ -6,13 +6,15 @@ import {getAuth} from 'firebase/auth';
 import {getApp} from "firebase/app";
 import {getFirestore, doc, collection, addDoc} from 'firebase/firestore';
 import axios from "axios";
-import {Datepicker, initTE, Input} from "tw-elements";
+import {formatToValidDate} from "@/helpers/date";
 import ScoreValue from "@/components/ScoreValue.vue";
-import {format} from "@/helpers/date";
+import Datepicker from "@/components/Datepicker.vue";
+import moment from "moment";
 
 const db = getFirestore(getApp());
 
 const productFound = ref(false);
+const displayDatepicker = ref(false);
 const product = ref({
   code: '',
   name: '',
@@ -22,8 +24,8 @@ const product = ref({
   ecoscore: ''
 });
 const availableImages = ref(null);
-const expirationDate = ref(null);
 const productDescription = computed(() => product.value.description.charAt(0).toUpperCase() + product.value.description.slice(1).toLowerCase())
+const today = moment().format('YYYY-MM-DD');
 
 onMounted(() => {
   const html5QrcodeScanner = new Html5QrcodeScanner(
@@ -36,17 +38,6 @@ onMounted(() => {
   );
   html5QrcodeScanner.render(onScanSuccess, (error) => {
     console.error(error)
-  });
-
-  initTE({Datepicker, Input});
-
-  const confirmDateOnSelect = document.getElementById('datepicker');
-  new Datepicker(confirmDateOnSelect, {
-    confirmDateOnSelect: true,
-    disablePast: true,
-    removeOkBtn: true,
-    removeCancelBtn: true,
-    removeClearBtn: true,
   });
 });
 
@@ -77,7 +68,7 @@ async function saveProduct() {
     code: product.value.code,
     user: getAuth().currentUser.uid,
     name: product.value.name,
-    expirationDate: format(expirationDate.value),
+    expirationDate: product.value.expirationDate,
     image: product.value.image,
   }).then((data) => {
     router.push('/');
@@ -97,7 +88,7 @@ async function saveProduct() {
       <h2 v-show="availableImages">Choisissez une image</h2>
       <div :class="availableImages ? 'justify-between' : 'justify-center'"
            class="flex flex-wrap mt-2">
-        <div v-if="availableImages" class="w-24 flex mb-5" v-for="imageUrl in availableImages">
+        <div v-if="availableImages" class="w-24 flex mb-5" v-for="imageUrl in availableImages" :key="imageUrl">
           <img :src="imageUrl" @click="product.image = imageUrl"
                :class="{'border-4 border-green-700' : product.image === imageUrl}" class="self-center rounded-md"
                alt="product picture">
@@ -107,23 +98,20 @@ async function saveProduct() {
         </div>
       </div>
 
-      <div
-          class="relative"
-          id="datepicker"
-          data-te-input-wrapper-init>
-        <input
-            v-model='expirationDate'
-            type="text"
-            :class="{'border-2 border-rose-600': !expirationDate}"
-            class="peer block min-h-[auto] w-full rounded bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-            data-te-datepicker-toggle-ref
-            data-te-datepicker-toggle-button-ref/>
-        <label
-            for="floatingInput"
-            class="font-medium pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary">
-          Date de péremption
-        </label>
+      <div class="text-center">
+        <label for="expirationDate" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Date de
+          péremption</label>
+        <input type="text" name="expirationDate" id="expirationDate" placeholder="? / ? / ?"
+               @click="displayDatepicker = true"
+               v-model="product.expirationDate" :class="[product.expirationDate ? 'ring-gray-300' : 'ring-red-500']"
+               class="mx-auto text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset text-sm"/>
       </div>
+
+      <Transition>
+        <Datepicker v-if="displayDatepicker && product"
+                    :date="product.expirationDate ? formatToValidDate(product.expirationDate) : today"
+                    @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false;}"/>
+      </Transition>
 
       <div class="mt-5 grid grid-cols-2 text-center">
         <div>
@@ -138,7 +126,7 @@ async function saveProduct() {
 
       <div class="mt-5 text-center">{{ productDescription }}</div>
 
-      <div class="text-center">
+      <div v-show="product.expirationDate && product.expirationDate" class="text-center">
         <button type="button" @click="saveProduct"
                 class="rounded bg-white mt-5 px-4 py-2 text-md font-semibold text-gray-900 shadow ring-1 ring-inset ring-gray-300">
           Ajouter

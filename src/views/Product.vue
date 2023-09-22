@@ -3,7 +3,7 @@ import {useRoute} from "vue-router";
 import {onMounted, ref, watch} from "vue";
 import {doc, getDoc, getFirestore, updateDoc} from "firebase/firestore";
 import {getApp} from "firebase/app";
-import {formatToDisplay} from "@/helpers/date";
+import {formatToValidDate} from "@/helpers/date";
 import EatButton from "@/components/EatButton.vue";
 import Datepicker from "@/components/Datepicker.vue";
 
@@ -13,7 +13,7 @@ const route = useRoute();
 let productId = ref('');
 productId = route.params.id;
 
-let product = ref({name: '', image: '', expirationDate: ''});
+let product = ref({});
 let displayDatepicker = ref(false);
 
 onMounted(async () => {
@@ -23,7 +23,7 @@ onMounted(async () => {
   if (docSnap.exists()) {
     product.value = docSnap.data();
   } else {
-    console.log("No product found");
+    console.error("No product found");
   }
 });
 
@@ -72,7 +72,7 @@ async function finishProduct() {
                class="text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
 
         <Transition>
-          <Datepicker v-if="displayDatepicker && product" :date="formatToDisplay(product.expirationDate)"
+          <Datepicker v-if="displayDatepicker && product" :date="formatToValidDate(product.expirationDate)"
                       @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false;}"/>
         </Transition>
 

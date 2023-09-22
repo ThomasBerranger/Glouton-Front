@@ -4,6 +4,7 @@ import {collection, query, where, getDocs, getFirestore} from "firebase/firestor
 import {getApp} from "firebase/app";
 import {getAuth} from "firebase/auth";
 import HorizontalList from "@/components/HorizontalLIst.vue";
+import {formatToValidDate} from "@/helpers/date";
 
 let productsByCategory = ref({week: [], month: [], other: [], finished: []});
 
@@ -15,7 +16,7 @@ onMounted(async () => {
 
   querySnapshot.forEach((doc) => {
 
-    const timeDifference = new Date(doc.data().expirationDate) - new Date();
+    const timeDifference = new Date(formatToValidDate(doc.data().expirationDate)) - new Date();
     const remainingDays = Math.ceil(timeDifference / (24 * 60 * 60 * 1000));
 
     switch (true) {
@@ -41,7 +42,7 @@ onMounted(async () => {
       })
     } else {
       productsByCategory.value[key].sort((a, b) => {
-        return new Date(a.expirationDate) - new Date(b.expirationDate);
+        return new Date(formatToValidDate(a.expirationDate)) - new Date(formatToValidDate(b.expirationDate));
       })
     }
   }
