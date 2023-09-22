@@ -99,10 +99,6 @@ function changeMonth(newMonthSameYear, next = true) {
 
   showMonths.value = false;
 }
-
-function changeDate(newDate) {
-  console.log(newDate);
-}
 </script>
 
 <template>
@@ -142,7 +138,7 @@ function changeDate(newDate) {
                   !day.currentDay && !day.selected && day.selectedMonth && 'text-gray-900',
                   !day.currentDay && !day.selected && !day.selectedMonth && 'text-gray-400',
                 ]"
-            @click="changeDate(day.date)">
+                    @click="$emit('updateDate', day.date)">
               {{ day.dayNumber }}
             </button>
           </div>

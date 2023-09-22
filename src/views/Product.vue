@@ -1,9 +1,9 @@
 <script setup>
 import {useRoute} from "vue-router";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {doc, getDoc, getFirestore, updateDoc} from "firebase/firestore";
 import {getApp} from "firebase/app";
-import {format, unFormat} from "@/helpers/date";
+import {formatToDisplay} from "@/helpers/date";
 import EatButton from "@/components/EatButton.vue";
 import Datepicker from "@/components/Datepicker.vue";
 
@@ -11,10 +11,10 @@ const db = getFirestore(getApp());
 const route = useRoute();
 
 let productId = ref('');
-let product = ref({});
-let displayDatepicker = ref(false);
-
 productId = route.params.id;
+
+let product = ref({name: '', image: '', expirationDate: ''});
+let displayDatepicker = ref(false);
 
 onMounted(async () => {
   const docRef = doc(db, "products", productId);
@@ -27,7 +27,7 @@ onMounted(async () => {
   }
 });
 
-async function editProduct() {
+watch(product, async (newProduct, oldProduct) => {
   const productRef = doc(db, "products", productId);
 
   await updateDoc(productRef, {
@@ -35,7 +35,7 @@ async function editProduct() {
     image: product.value.image,
     expirationDate: product.value.expirationDate
   });
-}
+}, {deep: true})
 
 async function finishProduct() {
   const productRef = doc(db, "products", productId);
@@ -62,25 +62,24 @@ async function finishProduct() {
         <label for="name" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Nom du
           produit</label>
         <input type="text" name="name" id="name" v-model="product.name"
-               @input="editProduct"
-               class="w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
+               class="text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
 
         <label for="expirationDate" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Date de
           péremption</label>
         <input type="text" name="expirationDate" id="expirationDate"
                @click="displayDatepicker = true"
                v-model="product.expirationDate"
-               class="w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
+               class="text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
 
         <Transition>
-          <Datepicker v-if="displayDatepicker && product" :date="product.expirationDate"/>
+          <Datepicker v-if="displayDatepicker && product" :date="formatToDisplay(product.expirationDate)"
+                      @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false;}"/>
         </Transition>
 
         <label for="image" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Lien de
           l'image</label>
         <input type="text" name="image" id="image" v-model="product.image"
-               @input="editProduct"
-               class="w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
+               class="w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6 truncate"/>
 
         <hr class="w-2/3 mx-auto my-5">
       </div>

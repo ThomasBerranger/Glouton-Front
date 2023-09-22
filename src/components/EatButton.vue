@@ -1,7 +1,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 
-const messages = ['Terminé !', 'Miam miam', 'Y a plus !', 'J\'ai finii', 'Oups j\'ai tout mangé'];
+const messages = ['Terminé', 'Miam miam', 'J\'ai fini', 'J\'ai tout mangé'];
 let message = ref('');
 
 onMounted(() => {
