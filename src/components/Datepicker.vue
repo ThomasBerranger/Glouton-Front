@@ -2,6 +2,7 @@
 import {computed, ref} from "vue";
 import moment from "moment";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {formatToDisplay} from "@/helpers/date";
 
 const props = defineProps(['date']);
 
@@ -103,70 +104,67 @@ function changeMonth(newMonthSameYear, next = true) {
 
 <template>
   <section>
-    <div class="absolute top-0 left-0 w-screen bg-black opacity-80 screen-height"></div>
-    <div class="absolute top-0 left-0 w-screen screen-height flex flex-1 flex-col justify-center">
+    <div class="absolute top-0 left-0 w-screen bg-black opacity-80 screen-height" @click="$emit('updateDate', formatToDisplay(props.date))"></div>
+    <div class="absolute-center w-10/12 mx-auto bg-white rounded">
 
-      <div class="w-4/5 mx-auto bg-white rounded">
-
-        <div class="flex justify-between items-center p-3">
-          <h2 class="text-xl text-gray-900 capitalize">
-            <span @click="showMonths = !showMonths; showYears = false">{{ selectedMonth.name }}</span>
-            <span @click="showYears = !showYears; showMonths = false" class="pl-2">{{ selectedYear }}</span>
-          </h2>
-          <div>
-            <button type="button" class="text-sm text-gray-500 px-1.5" @click="changeMonth(null, false)">
-              <font-awesome-icon icon="fa-solid fa-chevron-left"/>
-            </button>
-            <button type="button" class="text-sm text-gray-500 px-1.5" @click="changeMonth(null)">
-              <font-awesome-icon icon="fa-solid fa-chevron-right"/>
-            </button>
-          </div>
+      <div class="flex justify-between items-center p-3">
+        <h2 class="text-xl text-gray-900 capitalize">
+          <span @click="showMonths = !showMonths; showYears = false">{{ selectedMonth.name }}</span>
+          <span @click="showYears = !showYears; showMonths = false" class="pl-2">{{ selectedYear }}</span>
+        </h2>
+        <div>
+          <button type="button" class="text-sm text-gray-500 px-1.5" @click="changeMonth(null, false)">
+            <font-awesome-icon icon="fa-solid fa-chevron-left"/>
+          </button>
+          <button type="button" class="text-sm text-gray-500 px-1.5" @click="changeMonth(null)">
+            <font-awesome-icon icon="fa-solid fa-chevron-right"/>
+          </button>
         </div>
+      </div>
 
-        <Transition mode="out-in">
-          <div v-if="!showMonths && !showYears" class="grid grid-cols-7 text-center text-xs">
-            <p v-for="day in days" :key="day">{{ day }}</p>
+      <Transition mode="out-in">
+        <div v-if="!showMonths && !showYears" class="grid grid-cols-7 text-center text-xs">
+          <p v-for="day in days" :key="day">{{ day }}</p>
 
-            <div v-for="(day, dayIdx) in calendar" :key="day.date"
-                 :class="[dayIdx > 6 && 'border-t border-gray-200', 'py-2']">
-              <button type="button" class="mx-auto flex h-8 w-8 items-center justify-center"
-                      :class="[
+          <div v-for="(day, dayIdx) in calendar" :key="day.date"
+               :class="[dayIdx > 6 && 'border-t border-gray-200', 'py-2']">
+            <button type="button" class="mx-auto flex h-8 w-8 items-center justify-center"
+                    :class="[
                   day.selected && day.currentDay && 'rounded-full bg-red-500 text-red-900',
                   day.selected && 'rounded-full bg-red-400 font-semibold text-white',
                   day.currentDay && 'text-indigo-600 font-bold',
                   !day.currentDay && !day.selected && day.selectedMonth && 'text-gray-900',
                   !day.currentDay && !day.selected && !day.selectedMonth && 'text-gray-400',
                 ]"
-                      @click="$emit('updateDate', day.date)">
-                {{ day.dayNumber }}
-              </button>
-            </div>
+                    @click="$emit('updateDate', day.date)">
+              {{ day.dayNumber }}
+            </button>
           </div>
+        </div>
 
-          <div v-else-if="showMonths" class="mt-2 grid grid-cols-3 gap-2 px-2 text-center text-sm">
-            <div v-for="(month, monthNumber) in months" :key="month" class="my-2 py-2 rounded-lg ring-inset"
-                 :class="[selectedMonth.number === parseInt(monthNumber) ? 'ring-2 ring-indigo-600' : 'ring-1 ring-gray-300']"
-                 @click="changeMonth(monthNumber)">
-              {{ month }}
-            </div>
+        <div v-else-if="showMonths" class="mt-2 grid grid-cols-3 gap-2 px-2 text-center text-sm">
+          <div v-for="(month, monthNumber) in months" :key="month" class="my-2 py-2 rounded-lg ring-inset"
+               :class="[selectedMonth.number === parseInt(monthNumber) ? 'ring-2 ring-indigo-600' : 'ring-1 ring-gray-300']"
+               @click="changeMonth(monthNumber)">
+            {{ month }}
           </div>
+        </div>
 
-          <div v-else-if="showYears" class="mt-1 text-center text-lg h-60 overflow-auto">
-            <ul>
-              <li v-for="year in selectableYears" :key="year" @click="changeYear(year)" class="py-0.5"
-                  :class="{'font-bold text-indigo-600' : year === selectedYear}">{{ year }}
-              </li>
-            </ul>
-          </div>
-        </Transition>
-
-      </div>
+        <div v-else-if="showYears" class="mt-1 text-center text-lg h-60 overflow-auto">
+          <ul>
+            <li v-for="year in selectableYears" :key="year" @click="changeYear(year)" class="py-0.5"
+                :class="{'font-bold text-indigo-600' : year === selectedYear}">{{ year }}
+            </li>
+          </ul>
+        </div>
+      </Transition>
 
     </div>
+
   </section>
 </template>
 
-<style>
+<style scoped>
 .v-enter-active,
 .v-leave-active {
   transition: opacity 0.2s ease;
