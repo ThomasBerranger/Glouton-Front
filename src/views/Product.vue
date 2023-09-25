@@ -7,6 +7,7 @@ import {formatToValidDate} from "@/helpers/date";
 import EatButton from "@/components/EatButton.vue";
 import Datepicker from "@/components/Datepicker.vue";
 import moment from "moment";
+import Notification from "@/components/Notification.vue";
 
 const db = getFirestore(getApp());
 const route = useRoute();
@@ -18,6 +19,11 @@ const productRef = doc(db, "products", productId);
 
 let product = ref({});
 let displayDatepicker = ref(false);
+let notification = ref({
+  show: false,
+  message: '',
+  timeout: 3000
+})
 
 onMounted(async () => {
   const docRef = doc(db, "products", productId);
@@ -52,7 +58,9 @@ async function updateShoppingList(add = true) {
   await updateDoc(productRef, {
     toPurchase: add,
   }).then(() => {
-    product.value.toPurchase = add
+    product.value.toPurchase = add;
+    notification.value.show = true;
+    notification.value.message = `${product.value.name} a été ${add ? 'ajouté à' : 'retiré de'} la liste de courses.`;
   });
 }
 
@@ -63,8 +71,8 @@ async function refill() {
     finishedAt: '',
     toPurchase: false,
   }).then(() => {
-    product.value.finishedAt = '',
-    product.value.toPurchase = false
+    product.value.finishedAt = '';
+    product.value.toPurchase = false;
   });
 }
 </script>
@@ -92,7 +100,7 @@ async function refill() {
 
         <Transition>
           <Datepicker v-if="displayDatepicker && product" :date="formatToValidDate(product.expirationDate)"
-                      @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false;}"/>
+                      @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false; }"/>
         </Transition>
 
         <label for="image" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Lien de
@@ -117,6 +125,10 @@ async function refill() {
       </div>
 
     </div>
+
+    <Transition>
+      <Notification v-if="notification.show" :notification="notification" @close="notification.show = false"/>
+    </Transition>
 
   </section>
 </template>
