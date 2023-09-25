@@ -6,12 +6,15 @@ import {getApp} from "firebase/app";
 import {formatToValidDate} from "@/helpers/date";
 import EatButton from "@/components/EatButton.vue";
 import Datepicker from "@/components/Datepicker.vue";
+import moment from "moment";
 
 const db = getFirestore(getApp());
 const route = useRoute();
 
 let productId = ref('');
 productId = route.params.id;
+
+const productRef = doc(db, "products", productId);
 
 let product = ref({});
 let displayDatepicker = ref(false);
@@ -28,8 +31,6 @@ onMounted(async () => {
 });
 
 watch(product, async (newProduct, oldProduct) => {
-  const productRef = doc(db, "products", productId);
-
   await updateDoc(productRef, {
     name: product.value.name,
     image: product.value.image,
@@ -37,14 +38,33 @@ watch(product, async (newProduct, oldProduct) => {
   });
 }, {deep: true})
 
-async function finishProduct() {
-  const productRef = doc(db, "products", productId);
-
+async function finish() {
   await updateDoc(productRef, {
-    finishedAt: Date.now(),
+    finishedAt: moment().format('L'),
     toPurchase: true,
   }).then(() => {
-    product.finishedAt = Date.now()
+    product.value.finishedAt = moment().format('L');
+    product.value.toPurchase = true;
+  });
+}
+
+async function updateShoppingList(add = true) {
+  await updateDoc(productRef, {
+    toPurchase: add,
+  }).then(() => {
+    product.value.toPurchase = add
+  });
+}
+
+async function refill() {
+  displayDatepicker.value = true;
+
+  await updateDoc(productRef, {
+    finishedAt: '',
+    toPurchase: false,
+  }).then(() => {
+    product.value.finishedAt = '',
+    product.value.toPurchase = false
   });
 }
 </script>
@@ -83,8 +103,17 @@ async function finishProduct() {
         <hr class="w-2/3 mx-auto my-5">
       </div>
 
-      <div class="w-screen flex justify-around">
-        <EatButton @click="finishProduct"/>
+      <div class="w-screen flex justify-evenly">
+        <EatButton v-if="!product.finishedAt" @click="finish"/>
+        <button v-else @click="updateShoppingList(!product.toPurchase)"
+                class="rounded-md px-2.5 py-1.5 text-sm font-medium text-white shadow-sm"
+                :class="[product.toPurchase ? 'bg-green-500' : 'bg-red-400']">
+          <font-awesome-icon icon="fa-solid fa-cart-shopping"/>
+        </button>
+        <button v-if="product.finishedAt" @click="refill"
+                class="rounded-md border-2 px-2.5 py-1.5 text-sm font-medium shadow-sm">
+          J'en ai acheté
+        </button>
       </div>
 
     </div>
