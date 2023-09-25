@@ -102,8 +102,8 @@ async function saveProduct() {
         <label for="expirationDate" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Date de
           péremption</label>
         <input type="text" name="expirationDate" id="expirationDate" placeholder="? / ? / ?"
-               @click="displayDatepicker = true"
-               v-model="product.expirationDate" :class="[product.expirationDate ? 'ring-gray-300' : 'ring-red-500']"
+               readonly @click="displayDatepicker = true" v-model="product.expirationDate"
+               :class="[product.expirationDate ? 'ring-gray-300' : 'ring-red-500']"
                class="mx-auto text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset text-sm"/>
       </div>
 

@@ -67,8 +67,7 @@ async function finishProduct() {
         <label for="expirationDate" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Date de
           péremption</label>
         <input type="text" name="expirationDate" id="expirationDate"
-               @click="displayDatepicker = true"
-               v-model="product.expirationDate"
+               readonly @click="displayDatepicker = true" v-model="product.expirationDate"
                class="text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
 
         <Transition>
