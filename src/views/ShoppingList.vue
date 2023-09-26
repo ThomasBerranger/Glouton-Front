@@ -47,7 +47,9 @@ async function removeProductFormShoppingList(product) {
 }
 
 function refillProduct(product) {
-    product.toPurchase = false;
+  product.toPurchase = false;
+  notification.value.message = `En cours de dev...`;
+  notification.value.show = true;
 }
 </script>
 
