@@ -3,11 +3,10 @@ import {useRoute} from "vue-router";
 import {onMounted, ref, watch} from "vue";
 import {doc, getDoc, getFirestore, updateDoc} from "firebase/firestore";
 import {getApp} from "firebase/app";
-import {formatToValidDate} from "@/helpers/date";
 import EatButton from "@/components/EatButton.vue";
-import Datepicker from "@/components/Datepicker.vue";
 import moment from "moment";
 import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
+import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
 
 const db = getFirestore(getApp());
 const route = useRoute();
@@ -104,10 +103,8 @@ async function refill() {
                readonly @click="displayDatepicker = true" v-model="product.expirationDate"
                class="text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
 
-        <Transition>
-          <Datepicker v-if="displayDatepicker && product" :date="formatToValidDate(product.expirationDate)"
-                      @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false; }"/>
-        </Transition>
+        <DatepickerContainer :display="displayDatepicker && product" :date="product.expirationDate"
+                             @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false; }"/>
 
         <label for="image" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Lien de
           l'image</label>
@@ -134,15 +131,3 @@ async function refill() {
 
   </section>
 </template>
-
-<style>
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-</style>

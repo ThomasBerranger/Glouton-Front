@@ -6,10 +6,9 @@ import {getAuth} from 'firebase/auth';
 import {getApp} from "firebase/app";
 import {getFirestore, doc, collection, addDoc} from 'firebase/firestore';
 import axios from "axios";
-import {formatToValidDate} from "@/helpers/date";
 import ScoreValue from "@/components/ScoreValue.vue";
-import Datepicker from "@/components/Datepicker.vue";
 import moment from "moment";
+import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
 
 const db = getFirestore(getApp());
 
@@ -25,7 +24,6 @@ const product = ref({
 });
 const availableImages = ref(null);
 const productDescription = computed(() => product.value.description.charAt(0).toUpperCase() + product.value.description.slice(1).toLowerCase())
-const today = moment().format('YYYY-MM-DD');
 
 onMounted(() => {
   const html5QrcodeScanner = new Html5QrcodeScanner(
@@ -107,11 +105,8 @@ async function saveProduct() {
                class="mx-auto text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset text-sm"/>
       </div>
 
-      <Transition>
-        <Datepicker v-if="displayDatepicker && product"
-                    :date="product.expirationDate ? formatToValidDate(product.expirationDate) : today"
-                    @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false;}"/>
-      </Transition>
+      <DatepickerContainer :display="displayDatepicker && product" :date="product.expirationDate ?? moment().format('YYYY-MM-DD')"
+                           @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false; }"/>
 
       <div class="mt-5 grid grid-cols-2 text-center">
         <div>
