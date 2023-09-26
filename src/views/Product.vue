@@ -7,7 +7,7 @@ import {formatToValidDate} from "@/helpers/date";
 import EatButton from "@/components/EatButton.vue";
 import Datepicker from "@/components/Datepicker.vue";
 import moment from "moment";
-import Notification from "@/components/Notification.vue";
+import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
 
 const db = getFirestore(getApp());
 const route = useRoute();
@@ -23,7 +23,7 @@ let notification = ref({
   show: false,
   message: '',
   timeout: 3000
-})
+});
 
 onMounted(async () => {
   const docRef = doc(db, "products", productId);
@@ -36,7 +36,7 @@ onMounted(async () => {
   }
 });
 
-watch(product, async (newProduct, oldProduct) => {
+watch(product, async () => {
   await updateDoc(productRef, {
     name: product.value.name,
     image: product.value.image,
@@ -51,6 +51,8 @@ async function finish() {
   }).then(() => {
     product.value.finishedAt = moment().format('L');
     product.value.toPurchase = true;
+    notification.value.show = true;
+    notification.value.message = `${product.value.name} a été jouté à la liste de courses.`;
   });
 }
 
@@ -78,11 +80,15 @@ async function refill() {
 </script>
 
 <template>
-  <section class="w-screen screen-height flex flex-1 flex-col justify-center">
 
-    <div v-show="Object.keys(product).length !== 0" class="bg-white py-5 shadow">
+  <NotificationContainer :notification="notification" @close="notification.show = false"/>
 
-      <h1 class="text-2xl text-center px-4 pb-4 truncate">{{ product.name }}</h1>
+  <section v-show="Object.keys(product).length !== 0"
+           class="w-screen screen-height flex flex-1 flex-col justify-center">
+
+    <h1 class="text-2xl text-center px-4 pb-4 truncate">{{ product.name }}</h1>
+
+    <div class="bg-white py-5 shadow">
 
       <img class="h-60 mx-auto px-2" :src="product.image" :alt="product.name"/>
 
@@ -125,10 +131,6 @@ async function refill() {
       </div>
 
     </div>
-
-    <Transition>
-      <Notification v-if="notification.show" :notification="notification" @close="notification.show = false"/>
-    </Transition>
 
   </section>
 </template>

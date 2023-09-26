@@ -4,8 +4,16 @@ import {collection, doc, getDocs, getFirestore, query, updateDoc, where} from "f
 import {getApp} from "firebase/app";
 import {getAuth} from "firebase/auth";
 import {RouterLink} from "vue-router";
+import Notification from "@/components/Notification/Notification.vue";
+import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
 
-const products = ref([]);
+let products = ref([]);
+
+let notification = ref({
+  show: false,
+  message: '',
+  timeout: 3000
+});
 
 const db = getFirestore(getApp());
 const q = query(
@@ -29,13 +37,24 @@ onMounted(async () => {
 async function removeProductFormShoppingList(product) {
   const productRef = doc(db, "products", product.id);
 
-  await updateDoc(productRef, {toPurchase: false}).then(() => {
-    product.toPurchase = false
+  await updateDoc(productRef, {
+    toPurchase: false
+  }).then(() => {
+    product.toPurchase = false;
+    notification.value.message = `${product.name} a été retiré de la liste de courses.`;
+    notification.value.show = true;
   });
+}
+
+function refillProduct(product) {
+    product.toPurchase = false;
 }
 </script>
 
 <template>
+
+  <NotificationContainer :notification="notification" @close="notification.show = false"/>
+
   <div class="w-screen flex justify-between items-center p-3 mt-1">
     <h2 class="text-xl">Ma liste de course</h2>
     <RouterLink to="/account">
@@ -45,14 +64,18 @@ async function removeProductFormShoppingList(product) {
 
   <div v-for='product in products' class="w-screen">
     <Transition name="slide-fade">
-      <div v-if="product.toPurchase" class="grid grid-cols-10 items-center p-2 my-3 bg-white shadow">
+      <div v-if="product.toPurchase" class="grid grid-cols-11 shadow shopping-list-product">
         <RouterLink :to="'/product/' + product.id" class="col-span-2">
-          <img :src="product.image" :alt="product.name" class="rounded">
+          <img :src="product.image" :alt="product.name">
         </RouterLink>
         <RouterLink :to="'/product/' + product.id" class="col-span-7 px-2 truncate">{{ product.name }}</RouterLink>
+        <button type="button" @click="refillProduct(product)"
+                class="bg-green-500 text-sm font-semibold text-white shadow-sm col-span-1 h-full">
+          <font-awesome-icon icon="fa-solid fa-check" class="text-xl"/>
+        </button>
         <button type="button" @click="removeProductFormShoppingList(product)"
-                class="rounded-md bg-red-400 text-sm font-semibold text-white shadow-sm h-full col-span-1">
-          <font-awesome-icon icon="fa-solid fa-xmark" class="text-2xl"/>
+                class="bg-red-400 text-sm font-semibold text-white shadow-sm col-span-1 h-full">
+          <font-awesome-icon icon="fa-solid fa-xmark" class="text-xl"/>
         </button>
       </div>
     </Transition>
@@ -62,6 +85,13 @@ async function removeProductFormShoppingList(product) {
 </template>
 
 <style>
+.shopping-list-product {
+  min-height: 4vh;
+  background-color: white;
+  align-items: center;
+  margin: 0.75rem 0 0.75rem 0;
+}
+
 .slide-fade-leave-active {
   transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
 }

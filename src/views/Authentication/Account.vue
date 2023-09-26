@@ -14,7 +14,7 @@ const logout = () => {
     <div class="text-center bg-white shadow-md">
       <h2 class="text-xl my-5">{{ auth.currentUser.email }}</h2>
       <button @click="logout" class="mb-4 border-2 border-red-500 rounded py-1.5 px-3 font-medium text-red-500">
-        Logout
+        Se déconnecter
       </button>
     </div>
   </div>
