@@ -30,6 +30,8 @@ onMounted(async () => {
 
   if (docSnap.exists()) {
     product.value = docSnap.data();
+
+    console.log(product.value.expirationDate);
   } else {
     console.error("No product found");
   }

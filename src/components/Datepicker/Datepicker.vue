@@ -2,11 +2,10 @@
 import {computed, ref} from "vue";
 import moment from "moment";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import {formatToDisplay} from "@/helpers/date";
 
 const props = defineProps(['date']);
 
-let firstDayOfSelectedMonth = ref(moment(props.date).startOf('month').format('YYYY-MM-DD'));
+let firstDayOfSelectedMonth = ref(moment(props.date, 'DD-MM-YYYY', 'DD-MM-YYYY').startOf('month').format('YYYY-MM-DD'));
 
 // Computed properties
 let selectedMonth = computed(() => {
@@ -72,7 +71,7 @@ const calendar = computed(() => {
       dayNumber: tempFirstDayInCalendar.format('D'),
       currentDay: tempFirstDayInCalendar.format('L') === moment().format('L'),
       selectedMonth: tempFirstDayInCalendar.format('MMMM') === calendarData.value.selectedMonth,
-      selected: tempFirstDayInCalendar.format('L') === moment(props.date).format('L')
+      selected: tempFirstDayInCalendar.format('L') === moment(props.date, 'DD-MM-YYYY').format('L')
     });
 
     tempFirstDayInCalendar.add(1, 'day');
@@ -104,7 +103,7 @@ function changeMonth(newMonthSameYear, next = true) {
 
 <template>
   <section>
-    <div class="absolute top-0 left-0 w-screen bg-black opacity-80 screen-height" @click="$emit('updateDate', formatToDisplay(props.date))"></div>
+    <div class="absolute top-0 left-0 w-screen bg-black opacity-80 screen-height" @click="$emit('updateDate', props.date, 'DD-MM-YYYY')"></div>
     <div class="absolute-center w-10/12 mx-auto bg-white rounded">
 
       <div class="flex justify-between items-center p-3">

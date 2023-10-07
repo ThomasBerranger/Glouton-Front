@@ -4,7 +4,7 @@ import {collection, query, where, getDocs, getFirestore} from "firebase/firestor
 import {getApp} from "firebase/app";
 import {getAuth} from "firebase/auth";
 import HorizontalList from "@/components/HorizontalLIst.vue";
-import {formatToValidDate} from "@/helpers/date";
+import moment from "moment";
 
 let productsByCategory = ref({week: [], month: [], other: [], finished: []});
 
@@ -15,8 +15,7 @@ onMounted(async () => {
   const querySnapshot = await getDocs(q);
 
   querySnapshot.forEach((doc) => {
-
-    const timeDifference = new Date(formatToValidDate(doc.data().expirationDate)) - new Date();
+    const timeDifference = new Date(moment(doc.data().expirationDate, 'DD/MM/YYYY').format('YYYY-MM-DD')) - new Date();
     const remainingDays = Math.ceil(timeDifference / (24 * 60 * 60 * 1000));
 
     switch (true) {
@@ -38,11 +37,11 @@ onMounted(async () => {
   for (const key in productsByCategory.value) {
     if (key === 'finished') {
       productsByCategory.value[key].sort((a, b) => {
-        return b.finishedAt - a.finishedAt;
+        return new Date(moment(b.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD')) - new Date(moment(a.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD'));
       })
     } else {
       productsByCategory.value[key].sort((a, b) => {
-        return new Date(formatToValidDate(a.expirationDate)) - new Date(formatToValidDate(b.expirationDate));
+        return new Date(moment(a.expirationDate, 'DD/MM/YYYY').format('YYYY-MM-DD')) - new Date(moment(b.expirationDate, 'DD/MM/YYYY').format('YYYY-MM-DD'));
       })
     }
   }

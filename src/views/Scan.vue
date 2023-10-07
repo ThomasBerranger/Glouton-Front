@@ -1,13 +1,13 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import router from "@/router";
+import axios from "axios";
+import moment from "moment";
 import {Html5QrcodeScanner} from 'html5-qrcode';
 import {getAuth} from 'firebase/auth';
 import {getApp} from "firebase/app";
-import {getFirestore, doc, collection, addDoc} from 'firebase/firestore';
-import axios from "axios";
+import {getFirestore, collection, addDoc} from 'firebase/firestore';
 import ScoreValue from "@/components/ScoreValue.vue";
-import moment from "moment";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
 
 const db = getFirestore(getApp());
@@ -105,7 +105,7 @@ async function saveProduct() {
                class="mx-auto text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset text-sm"/>
       </div>
 
-      <DatepickerContainer :display="displayDatepicker && product" :date="product.expirationDate ?? moment().format('YYYY-MM-DD')"
+      <DatepickerContainer :display="displayDatepicker && product" :date="product.expirationDate ?? moment().format('DD-MM-YYYY')"
                            @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false; }"/>
 
       <div class="mt-5 grid grid-cols-2 text-center">
@@ -121,7 +121,7 @@ async function saveProduct() {
 
       <div class="mt-5 text-center">{{ productDescription }}</div>
 
-      <div v-show="product.expirationDate && product.expirationDate" class="text-center">
+      <div v-show="product.image && product.expirationDate" class="text-center">
         <button type="button" @click="saveProduct"
                 class="rounded bg-white mt-5 px-4 py-2 text-md font-semibold text-gray-900 shadow ring-1 ring-inset ring-gray-300">
           Ajouter

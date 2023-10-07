@@ -1,5 +1,4 @@
 <script setup>
-import {formatToValidDate} from "@/helpers/date";
 import Datepicker from "@/components/Datepicker/Datepicker.vue";
 
 const props = defineProps(['date', 'display']);
@@ -7,8 +6,7 @@ const props = defineProps(['date', 'display']);
 
 <template>
   <Transition>
-    <Datepicker v-if="props.display" :date="formatToValidDate(props.date)"
-                @update-date="(newDate) => { $emit('updateDate', newDate); }"/>
+    <Datepicker v-if="props.display" :date="props.date" @update-date="(newDate) => { $emit('updateDate', newDate); }"/>
   </Transition>
 </template>
 
