@@ -14,7 +14,11 @@ let categoryClosed = ref(true);
       <font-awesome-icon v-else icon="fa-solid fa-chevron-up"></font-awesome-icon>
     </div>
 
-    <Transition mode="out-in">
+    <div v-if="props.products.length === 0" class="flex justify-center items-center px-3 h-24">
+      <font-awesome-icon icon="fa-solid fa-circle-notch" spin class="h-6"></font-awesome-icon>
+    </div>
+
+    <Transition mode="out-in" v-else>
       <div v-if="categoryClosed" class="relative overflow-auto px-3">
         <div class="w-full flex gap-2 snap-x overflow-x-auto pb-5">
           <div v-for="product in products" class="snap-start scroll-ml-6 shrink-0 relative">
