@@ -38,6 +38,8 @@ onMounted(() => {
   html5QrcodeScanner.render(onScanSuccess, (error) => {
     console.error(error)
   });
+
+  onScanSuccess('20141486');
 });
 
 function onScanSuccess(decodedText, decodedResult) {
@@ -89,7 +91,7 @@ async function saveProduct() {
       <div class="mb-5 text-center text-xl">{{ product.name }}</div>
 
       <h2 v-show="availableImages">Choisissez une image</h2>
-      <div :class="availableImages ? 'justify-between' : 'justify-center'"
+      <div :class="availableImages ? 'justify-around' : 'justify-center'"
            class="flex flex-wrap mt-2">
         <div v-if="availableImages" class="w-24 flex mb-5" v-for="imageUrl in availableImages" :key="imageUrl">
           <img :src="imageUrl" @click="product.image = imageUrl"
