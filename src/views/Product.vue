@@ -7,6 +7,7 @@ import EatButton from "@/components/EatButton.vue";
 import moment from "moment";
 import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 const db = getFirestore(getApp());
 const route = useRoute();
@@ -30,8 +31,6 @@ onMounted(async () => {
 
   if (docSnap.exists()) {
     product.value = docSnap.data();
-
-    console.log(product.value.expirationDate);
   } else {
     console.error("No product found");
   }
@@ -84,12 +83,16 @@ async function refill() {
 
   <NotificationContainer :notification="notification" @close="notification.show = false"/>
 
-  <section v-show="Object.keys(product).length !== 0"
+  <section v-if="! product.name"
+           class="w-screen screen-height flex flex-1 flex-col justify-center items-center">
+    <font-awesome-icon icon="fa-solid fa-circle-notch" spin class="h-12"></font-awesome-icon>
+  </section>
+  <section v-else
            class="w-screen screen-height flex flex-1 flex-col justify-center">
 
-    <h1 class="text-2xl text-center px-4 pb-4 truncate">{{ product.name }}</h1>
-
     <div class="bg-white py-5 shadow">
+
+      <h1 class="text-2xl text-center px-4 pb-4 truncate">{{ product.name }}</h1>
 
       <img class="h-60 mx-auto px-2" :src="product.image" :alt="product.name"/>
 

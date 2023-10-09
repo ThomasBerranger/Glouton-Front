@@ -12,7 +12,8 @@ import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue
 
 const db = getFirestore(getApp());
 
-const productFound = ref(false);
+const scanActive = ref(true);
+const productNotFound = ref(false);
 const displayDatepicker = ref(false);
 const product = ref({
   code: '',
@@ -43,7 +44,8 @@ function onScanSuccess(decodedText, decodedResult) {
   axios
       .get(`https://world.openfoodfacts.org/api/v2/product/${decodedText}`)
       .then(response => {
-        productFound.value = true;
+        scanActive.value = false;
+        productNotFound.value = false;
 
         product.value.code = decodedText;
 
@@ -57,8 +59,11 @@ function onScanSuccess(decodedText, decodedResult) {
         product.value.description = response.data.product.generic_name_fr;
         product.value.nutriscore = response.data.product.nutriscore_score;
         product.value.ecoscore = response.data.product.ecoscore_score;
+
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        productNotFound.value = true;
+      });
 }
 
 async function saveProduct() {
@@ -77,8 +82,8 @@ async function saveProduct() {
 </script>
 
 <template>
-  <div v-show="!productFound" id="qrCodeScanner" class="bg-white shadow"></div>
-  <div v-show="productFound" class="bg-white mt-10 shadow">
+  <div v-show="scanActive" id="qrCodeScanner" class="bg-white shadow"></div>
+  <div v-show="!scanActive" class="bg-white mt-10 shadow">
 
     <div class="w-screen p-5">
       <div class="mb-5 text-center text-xl">{{ product.name }}</div>
@@ -88,7 +93,7 @@ async function saveProduct() {
            class="flex flex-wrap mt-2">
         <div v-if="availableImages" class="w-24 flex mb-5" v-for="imageUrl in availableImages" :key="imageUrl">
           <img :src="imageUrl" @click="product.image = imageUrl"
-               :class="{'border-4 border-green-700' : product.image === imageUrl}" class="self-center rounded-md"
+               :class="{'border-4 border-green-700' : product.image === imageUrl}" class="self-center rounded"
                alt="product picture">
         </div>
         <div v-else class="w-24 flex mb-5">
@@ -105,7 +110,8 @@ async function saveProduct() {
                class="mx-auto text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset text-sm"/>
       </div>
 
-      <DatepickerContainer :display="displayDatepicker && product" :date="product.expirationDate ?? moment().format('DD-MM-YYYY')"
+      <DatepickerContainer :display="displayDatepicker && product"
+                           :date="product.expirationDate ?? moment().format('DD-MM-YYYY')"
                            @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false; }"/>
 
       <div class="mt-5 grid grid-cols-2 text-center">
@@ -130,6 +136,8 @@ async function saveProduct() {
 
     </div>
   </div>
+
+  <p v-if="productNotFound" class="w-screen text-center pt-5">Article inconnu</p>
 
   <div class="h-20"></div>
 </template>
