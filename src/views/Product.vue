@@ -1,13 +1,15 @@
 <script setup>
 import {useRoute} from "vue-router";
 import {onMounted, ref, watch} from "vue";
-import {doc, getDoc, getFirestore, updateDoc} from "firebase/firestore";
+import {deleteDoc, doc, getDoc, getFirestore, updateDoc} from "firebase/firestore";
 import {getApp} from "firebase/app";
 import EatButton from "@/components/EatButton.vue";
 import moment from "moment";
 import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import router from "@/router";
+import {remove} from "@/functions/product";
 
 const db = getFirestore(getApp());
 const route = useRoute();
@@ -30,7 +32,7 @@ onMounted(async () => {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    product.value = docSnap.data();
+    product.value = {...docSnap.data(), ...{id: docSnap.id}};
   } else {
     console.error("No product found");
   }
@@ -129,6 +131,10 @@ async function refill() {
         <button v-if="product.finishedAt" @click="refill"
                 class="rounded-md border-2 px-2.5 py-1.5 text-sm font-medium shadow-sm">
           J'en ai acheté
+        </button>
+        <button class="rounded-md px-2.5 py-1.5 text-sm font-medium shadow-sm bg-red-400 text-white"
+                @click="remove(product).then(() => router.push('/'))">
+          <font-awesome-icon icon="fa-solid fa-trash"/>
         </button>
       </div>
 

@@ -6,7 +6,7 @@ import moment from "moment";
 import {Html5QrcodeScanner} from 'html5-qrcode';
 import {getAuth} from 'firebase/auth';
 import {getApp} from "firebase/app";
-import {getFirestore, collection, addDoc} from 'firebase/firestore';
+import {getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs} from 'firebase/firestore';
 import ScoreValue from "@/components/ScoreValue.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
 
@@ -42,7 +42,29 @@ onMounted(() => {
   onScanSuccess('20141486');
 });
 
-function onScanSuccess(decodedText, decodedResult) {
+async function onScanSuccess(decodedText, decodedResult) {
+
+  console.log(decodedText);
+
+  const db = getFirestore(getApp());
+  const q = query(
+      collection(db, "products"),
+      where("user", "==", getAuth().currentUser.uid),
+      where('code', '==', decodedText)
+  );
+  const querySnapshot = await getDocs(q);
+
+  if (querySnapshot.docs[0]) {
+    console.log(querySnapshot.docs[0].data());
+
+    // if (finished) -> fill calendar
+    // else -> finish || +1 calendar
+
+  } else {
+    console.log('not found');
+  }
+
+
   axios
       .get(`https://world.openfoodfacts.org/api/v2/product/${decodedText}`)
       .then(response => {
