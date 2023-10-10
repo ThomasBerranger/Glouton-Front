@@ -9,6 +9,7 @@ import {getApp} from "firebase/app";
 import {getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs} from 'firebase/firestore';
 import ScoreValue from "@/components/ScoreValue.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
+import logger from "@fortawesome/vue-fontawesome/src/logger";
 
 const db = getFirestore(getApp());
 
@@ -38,14 +39,9 @@ onMounted(() => {
   html5QrcodeScanner.render(onScanSuccess, (error) => {
     console.error(error)
   });
-
-  onScanSuccess('20141486');
 });
 
 async function onScanSuccess(decodedText, decodedResult) {
-
-  console.log(decodedText);
-
   const db = getFirestore(getApp());
   const q = query(
       collection(db, "products"),
@@ -55,39 +51,32 @@ async function onScanSuccess(decodedText, decodedResult) {
   const querySnapshot = await getDocs(q);
 
   if (querySnapshot.docs[0]) {
-    console.log(querySnapshot.docs[0].data());
-
-    // if (finished) -> fill calendar
-    // else -> finish || +1 calendar
-
+    await router.push('/product/' + querySnapshot.docs[0].id);
   } else {
-    console.log('not found');
+    axios
+        .get(`https://world.openfoodfacts.org/api/v2/product/${decodedText}`)
+        .then(response => {
+          scanActive.value = false;
+          productNotFound.value = false;
+
+          product.value.code = decodedText;
+
+          if (Object.keys(response.data.product.selected_images.front.display).length < 2) {
+            product.value.image = Object.values(response.data.product.selected_images.front.display)[0];
+          } else {
+            availableImages.value = response.data.product.selected_images.front.display;
+          }
+
+          product.value.name = response.data.product.product_name;
+          product.value.description = response.data.product.generic_name_fr;
+          product.value.nutriscore = response.data.product.nutriscore_score;
+          product.value.ecoscore = response.data.product.ecoscore_score;
+
+        })
+        .catch(error => {
+          productNotFound.value = true;
+        });
   }
-
-
-  axios
-      .get(`https://world.openfoodfacts.org/api/v2/product/${decodedText}`)
-      .then(response => {
-        scanActive.value = false;
-        productNotFound.value = false;
-
-        product.value.code = decodedText;
-
-        if (Object.keys(response.data.product.selected_images.front.display).length < 2) {
-          product.value.image = Object.values(response.data.product.selected_images.front.display)[0];
-        } else {
-          availableImages.value = response.data.product.selected_images.front.display;
-        }
-
-        product.value.name = response.data.product.product_name;
-        product.value.description = response.data.product.generic_name_fr;
-        product.value.nutriscore = response.data.product.nutriscore_score;
-        product.value.ecoscore = response.data.product.ecoscore_score;
-
-      })
-      .catch(error => {
-        productNotFound.value = true;
-      });
 }
 
 async function saveProduct() {

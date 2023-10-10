@@ -9,7 +9,7 @@ import NotificationContainer from "@/components/Notification/NotificationContain
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import router from "@/router";
-import {remove} from "@/functions/product";
+import {refill, remove} from "@/functions/product";
 
 const db = getFirestore(getApp());
 const route = useRoute();
@@ -68,16 +68,13 @@ async function updateShoppingList(add = true) {
   });
 }
 
-async function refill() {
+function refillProduct() {
   displayDatepicker.value = true;
 
-  await updateDoc(productRef, {
-    finishedAt: '',
-    toPurchase: false,
-  }).then(() => {
+  refill(productRef).then(() => {
     product.value.finishedAt = '';
     product.value.toPurchase = false;
-  });
+  })
 }
 </script>
 
@@ -128,7 +125,7 @@ async function refill() {
                 :class="[product.toPurchase ? 'bg-green-500' : 'bg-red-400']">
           <font-awesome-icon icon="fa-solid fa-cart-shopping"/>
         </button>
-        <button v-if="product.finishedAt" @click="refill"
+        <button v-if="product.finishedAt" @click="refillProduct"
                 class="rounded-md border-2 px-2.5 py-1.5 text-sm font-medium shadow-sm">
           J'en ai acheté
         </button>
