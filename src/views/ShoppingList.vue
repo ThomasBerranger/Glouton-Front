@@ -4,10 +4,13 @@ import {collection, doc, getDocs, getFirestore, query, updateDoc, where} from "f
 import {getApp} from "firebase/app";
 import {getAuth} from "firebase/auth";
 import {RouterLink} from "vue-router";
-import Notification from "@/components/Notification/Notification.vue";
 import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
+import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
+import {update, updateExpirationDate} from "@/functions/product"
 
 let products = ref([]);
+let displayDatepicker = ref(false);
+let productToRefill = ref({});
 
 let notification = ref({
   show: false,
@@ -46,10 +49,14 @@ async function removeProductFormShoppingList(product) {
   });
 }
 
-function refillProduct(product) {
-  product.toPurchase = false;
-  notification.value.message = `En cours de dev...`;
-  notification.value.show = true;
+function refill(newDate) {
+  productToRefill.value.expirationDate = newDate;
+  productToRefill.value.finishedAt = null;
+  productToRefill.value.toPurchase = false;
+
+  update(productToRefill.value).then(() => {
+    displayDatepicker.value = false;
+  })
 }
 </script>
 
@@ -64,14 +71,14 @@ function refillProduct(product) {
     </RouterLink>
   </div>
 
-  <div v-for='product in products' class="w-screen">
+  <div v-for='product in products' class="w-screen" :key="product.id">
     <Transition name="slide-fade">
       <div v-if="product.toPurchase" class="grid grid-cols-11 shadow shopping-list-product">
         <RouterLink :to="'/product/' + product.id" class="col-span-2">
           <img :src="product.image" :alt="product.name">
         </RouterLink>
         <RouterLink :to="'/product/' + product.id" class="col-span-7 px-2 truncate">{{ product.name }}</RouterLink>
-        <button type="button" @click="refillProduct(product)"
+        <button type="button" @click="displayDatepicker = true;productToRefill = product;"
                 class="bg-green-500 text-sm font-semibold text-white shadow-sm col-span-1 h-full">
           <font-awesome-icon icon="fa-solid fa-check" class="text-xl"/>
         </button>
@@ -82,6 +89,9 @@ function refillProduct(product) {
       </div>
     </Transition>
   </div>
+
+  <DatepickerContainer :display="displayDatepicker && productToRefill" :date="productToRefill.expirationDate"
+                       @update-date="(newDate) => { refill(newDate) }"/>
 
   <div class="h-20"></div>
 </template>

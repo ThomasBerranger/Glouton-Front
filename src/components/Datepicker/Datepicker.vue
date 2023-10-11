@@ -103,7 +103,7 @@ function changeMonth(newMonthSameYear, next = true) {
 
 <template>
   <section>
-    <div class="absolute top-0 left-0 w-screen bg-black opacity-80 screen-height" @click="$emit('updateDate', props.date, 'DD-MM-YYYY')"></div>
+    <div class="absolute top-0 left-0 w-screen bg-black opacity-80 h-screen" @click="$emit('updateDate', props.date, 'DD-MM-YYYY')"></div>
     <div class="absolute-center w-10/12 mx-auto bg-white rounded">
 
       <div class="flex justify-between items-center p-3">

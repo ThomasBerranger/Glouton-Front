@@ -21,10 +21,11 @@ let categoryClosed = ref(true);
     <Transition mode="out-in" v-else>
       <div v-if="categoryClosed" class="relative overflow-auto px-3">
         <div class="w-full flex gap-2 snap-x overflow-x-auto pb-5">
-          <div v-for="product in products" class="snap-start scroll-ml-6 shrink-0 relative">
+          <div v-for="product in products" class="snap-start scroll-ml-6 shrink-0 relative" :key="product.id">
 
             <RouterLink :to="'/product/' + product.id">
-              <img class="relative h-20 mx-auto rounded-sm" :src="product.image">
+              <img class="relative h-14 mx-auto rounded-sm" :alt="product.name"
+                   :src="product.image !== '' ? product.image : '/public/logo.png'">
             </RouterLink>
 
           </div>
@@ -33,7 +34,7 @@ let categoryClosed = ref(true);
       <div v-else class="w-screen flex flex-wrap px-2 pb-3">
 
         <RouterLink v-for="product in products" :to="'/product/' + product.id">
-          <img class="relative h-20 px-1 mb-2" :src="product.image">
+          <img class="relative h-14 px-1 mb-2" :src="product.image">
         </RouterLink>
 
       </div>
