@@ -24,7 +24,7 @@ let categoryClosed = ref(true);
           <div v-for="product in products" class="snap-start scroll-ml-6 shrink-0 relative" :key="product.id">
 
             <RouterLink :to="'/product/' + product.id">
-              <img class="relative h-14 mx-auto rounded-sm" :alt="product.name"
+              <img class="relative h-14 mx-auto rounded-sm"
                    :src="product.image !== '' ? product.image : '/public/logo.png'">
             </RouterLink>
 

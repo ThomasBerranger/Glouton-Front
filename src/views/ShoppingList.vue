@@ -38,11 +38,9 @@ onMounted(async () => {
 });
 
 async function removeProductFormShoppingList(product) {
-  const productRef = doc(db, "products", product.id);
+  product.toPurchase = false;
 
-  await updateDoc(productRef, {
-    toPurchase: false
-  }).then(() => {
+  update(product).then(() => {
     product.toPurchase = false;
     notification.value.message = `${product.name} a été retiré de la liste de courses.`;
     notification.value.show = true;
