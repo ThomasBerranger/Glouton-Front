@@ -24,7 +24,7 @@ let categoryClosed = ref(true);
           <div v-for="product in products" class="snap-start scroll-ml-6 shrink-0 relative" :key="product.id">
 
             <RouterLink :to="'/product/' + product.id">
-              <img class="relative h-14 mx-auto rounded-sm"
+              <img class="relative h-16 mx-auto rounded-sm"
                    :src="product.image !== '' ? product.image : '/public/logo.png'">
             </RouterLink>
 
@@ -34,7 +34,7 @@ let categoryClosed = ref(true);
       <div v-else class="w-screen flex flex-wrap px-2 pb-3">
 
         <RouterLink v-for="product in products" :to="'/product/' + product.id">
-          <img class="relative h-14 px-1 mb-2" :src="product.image">
+          <img class="relative h-16 px-1 mb-2" :src="product.image">
         </RouterLink>
 
       </div>

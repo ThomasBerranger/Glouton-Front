@@ -102,9 +102,11 @@ function refillProduct() {
                class="text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
 
         <label for="expirationDate" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Date de
-          péremption</label>
+          péremption {{ product.expirationDate }}</label>
         <input type="text" name="expirationDate" id="expirationDate"
                readonly @click="displayDatepicker = true" v-model="product.expirationDate"
+               :class="new Date((moment(product.expirationDate, 'DD/MM/YYYY').format('YYYY-MM-DD'))) > new Date() ?
+               (new Date((moment(product.expirationDate, 'DD/MM/YYYY').subtract(1, 'week').format('YYYY-MM-DD'))) > new Date() ? null : 'bg-orange-200') : 'bg-red-200'"
                class="text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
 
         <DatepickerContainer :display="displayDatepicker && product" :date="product.expirationDate"
@@ -113,7 +115,7 @@ function refillProduct() {
         <label for="image" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Lien de
           l'image</label>
         <input type="text" name="image" id="image" v-model="product.image"
-               class="w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6 truncate"/>
+               class="w-4/5 rounded-md border-0 px-3 py-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6 truncate"/>
 
         <hr class="w-2/3 mx-auto my-5">
       </div>
