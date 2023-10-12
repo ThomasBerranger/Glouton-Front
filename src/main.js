@@ -11,7 +11,7 @@ import {
     faBarcode,
     faCartShopping, faCheck,
     faChevronDown, faChevronLeft, faChevronRight,
-    faChevronUp, faCircleNotch, faTrash,
+    faChevronUp, faCircleNotch, faPlus, faTrash,
     faUser,
     faUtensils, faXmark
 } from '@fortawesome/free-solid-svg-icons';
@@ -19,7 +19,7 @@ import moment from "moment";
 
 initializeApp(firebaseConfig);
 
-library.add(faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight, faUser, faCheck, faXmark, faCircleNotch, faTrash);
+library.add(faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, faChevronLeft, faChevronRight, faUser, faCheck, faXmark, faCircleNotch, faTrash, faPlus);
 
 const app = createApp(App);
 

@@ -13,18 +13,20 @@ import logger from "@fortawesome/vue-fontawesome/src/logger";
 
 const db = getFirestore(getApp());
 
-const scanActive = ref(true);
-const productNotFound = ref(false);
-const displayDatepicker = ref(false);
-const product = ref({
+let scanActive = ref(true);
+let productNotFound = ref(false);
+let displayDatepicker = ref(false);
+let product = ref({
   code: '',
   name: '',
   description: '',
   image: '',
   nutriscore: '',
-  ecoscore: ''
+  ecoscore: '',
+  expirationDates: [null]
 });
-const availableImages = ref(null);
+let selectedExpirationDate = ref({key: null, value: null});
+let availableImages = ref(null);
 const productDescription = computed(() => product.value.description.charAt(0).toUpperCase() + product.value.description.slice(1).toLowerCase())
 
 onMounted(() => {
@@ -84,8 +86,9 @@ async function saveProduct() {
     code: product.value.code,
     user: getAuth().currentUser.uid,
     name: product.value.name,
-    expirationDate: product.value.expirationDate,
     image: product.value.image,
+    finishedAt: false,
+    expirationDates: product.value.expirationDates,
   }).then((data) => {
     router.push('/');
   }).catch((error) => {
@@ -114,18 +117,31 @@ async function saveProduct() {
         </div>
       </div>
 
-      <div class="text-center">
-        <label for="expirationDate" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Date de
+      <div v-for="(expirationDate, key) in product.expirationDates" :key="key" class="text-center my-2">
+        <label v-if="key === 0" for="expirationDate" class="w-4/5 text-sm font-medium leading-6 text-gray-900">Date de
           péremption</label>
-        <input type="text" name="expirationDate" id="expirationDate" placeholder="? / ? / ?"
-               readonly @click="displayDatepicker = true" v-model="product.expirationDate"
-               :class="[product.expirationDate ? 'ring-gray-300' : 'ring-red-500']"
-               class="mx-auto text-center w-4/5 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset text-sm"/>
+        <div class="h-8 my-3 grid grid-cols-12">
+          <input type="text" name="expirationDate" id="expirationDate" placeholder="? / ? / ?"
+                 @click="displayDatepicker = true; selectedExpirationDate.key = key; selectedExpirationDate.value = product.expirationDates[key];"
+                 v-model="product.expirationDates[key]"
+                 readonly
+                 :class="[expirationDate ? 'ring-gray-300' : 'ring-red-400', product.expirationDates.length === 1 ? 'col-span-12 rounded-md' : 'col-span-10 rounded-tl-md rounded-bl-md']"
+                 class="text-center h-full shadow-md ring-1 ring-inset text-sm"/>
+          <button v-if="product.expirationDates.length > 1" type="button" @click="product.expirationDates.splice(key, 1)"
+                  class="col-span-2 rounded-tr-md rounded-br-md shadow-md bg-red-400 text-sm font-semibold text-white">
+            <font-awesome-icon icon="fa-solid fa-xmark" class="text-xl"/>
+          </button>
+        </div>
       </div>
 
+      <button type="button" @click="product.expirationDates.push(null)"
+              class="rounded-md shadow-md bg-amber-300 pt-1 text-sm font-semibold text-white w-full">
+        <font-awesome-icon icon="fa-solid fa-plus" class="text-xl"/>
+      </button>
+
       <DatepickerContainer :display="displayDatepicker && product"
-                           :date="product.expirationDate ?? moment().format('DD-MM-YYYY')"
-                           @update-date="(newDate) => { product.expirationDate = newDate; displayDatepicker = false; }"/>
+                           :date="selectedExpirationDate.value ?? moment().format('DD/MM/YYYY')"
+                           @update-date="(newDate) => { product.expirationDates[selectedExpirationDate.key] = newDate; displayDatepicker = false; }"/>
 
       <div class="mt-5 grid grid-cols-2 text-center">
         <div>
@@ -140,7 +156,7 @@ async function saveProduct() {
 
       <div class="mt-5 text-center">{{ productDescription }}</div>
 
-      <div v-show="product.image && product.expirationDate" class="text-center">
+      <div v-show="product.image && product.expirationDates[0]" class="text-center">
         <button type="button" @click="saveProduct"
                 class="rounded bg-white mt-5 px-4 py-2 text-md font-semibold text-gray-900 shadow ring-1 ring-inset ring-gray-300">
           Ajouter

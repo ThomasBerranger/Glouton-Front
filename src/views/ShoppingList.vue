@@ -11,6 +11,7 @@ import {update, updateExpirationDate} from "@/functions/product"
 let products = ref([]);
 let displayDatepicker = ref(false);
 let productToRefill = ref({});
+let selectedExpirationDate = ref({key: null, value: null});
 
 let notification = ref({
   show: false,
@@ -48,8 +49,8 @@ async function removeProductFormShoppingList(product) {
 }
 
 function refill(newDate) {
-  productToRefill.value.expirationDate = newDate;
-  productToRefill.value.finishedAt = null;
+  productToRefill.value.expirationDates[0] = newDate;
+  productToRefill.value.finishedAt = false;
   productToRefill.value.toPurchase = false;
 
   update(productToRefill.value).then(() => {
@@ -76,7 +77,7 @@ function refill(newDate) {
           <img :src="product.image" :alt="product.name">
         </RouterLink>
         <RouterLink :to="'/product/' + product.id" class="col-span-7 px-2 truncate">{{ product.name }}</RouterLink>
-        <button type="button" @click="displayDatepicker = true;productToRefill = product;"
+        <button type="button" @click="displayDatepicker = true; productToRefill = product;"
                 class="bg-green-500 text-sm font-semibold text-white shadow-sm col-span-1 h-full">
           <font-awesome-icon icon="fa-solid fa-check" class="text-xl"/>
         </button>
@@ -88,7 +89,7 @@ function refill(newDate) {
     </Transition>
   </div>
 
-  <DatepickerContainer :display="displayDatepicker && productToRefill" :date="productToRefill.expirationDate"
+  <DatepickerContainer :display="displayDatepicker && productToRefill" :date="productToRefill.expirationDates"
                        @update-date="(newDate) => { refill(newDate) }"/>
 
   <div class="h-20"></div>

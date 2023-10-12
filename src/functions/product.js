@@ -6,7 +6,7 @@ let productRef = null;
 
 async function refill(productRef) {
     await updateDoc(productRef, {
-        finishedAt: '',
+        finishedAt: false,
         toPurchase: false,
     });
 }

@@ -6,46 +6,107 @@ import {getAuth} from "firebase/auth";
 import HorizontalList from "@/components/HorizontalLIst.vue";
 import moment from "moment";
 
-let productsByCategory = ref({week: [], month: [], other: [], finished: []});
+let productsByCategory = ref({
+  week: {values: [], loading: true},
+  month: {values: [], loading: true},
+  finished: {values: [], loading: true},
+  other: {values: [], loading: true}
+});
 
 const db = getFirestore(getApp());
-const q = query(collection(db, "products"), where("user", "==", getAuth().currentUser.uid));
 
 onMounted(async () => {
-  const querySnapshot = await getDocs(q);
+      let q = query(
+          collection(db, "products"),
+          where("user", "==", getAuth().currentUser.uid),
+          where("finishedAt", "==", false),
+          where('expirationDates', 'array-contains-any',
+              Array.from({length: 7}, (_, index) => {
+                return moment().add(index, 'day').format('DD/MM/YYYY');
+              })
+          )
+      );
 
-  querySnapshot.forEach((doc) => {
-    const timeDifference = new Date(moment(doc.data().expirationDate, 'DD/MM/YYYY').format('YYYY-MM-DD')) - new Date();
-    const remainingDays = Math.ceil(timeDifference / (24 * 60 * 60 * 1000));
+      let querySnapshot = await getDocs(q);
 
-    switch (true) {
-      case doc.data().finishedAt && doc.data().finishedAt !== null:
-        productsByCategory.value.finished.push({...doc.data(), ...{id: doc.id}});
-        break;
-      case remainingDays < 7:
-        productsByCategory.value.week.push({...doc.data(), ...{id: doc.id}});
-        break;
-      case remainingDays < 31:
-        productsByCategory.value.month.push({...doc.data(), ...{id: doc.id}});
-        break;
-      default:
-        productsByCategory.value.other.push({...doc.data(), ...{id: doc.id}});
-        break
+      querySnapshot.forEach((doc) => {
+        productsByCategory.value.week.values.push({...doc.data(), id: doc.id});
+      });
+
+      productsByCategory.value.week.loading = false;
+
+      q = query(
+          collection(db, "products"),
+          where("user", "==", getAuth().currentUser.uid),
+          where("finishedAt", "==", false),
+          where('expirationDates', 'array-contains-any',
+              Array.from({length: 24}, (_, index) => {
+                return moment().add(7 + index, 'day').format('DD/MM/YYYY');
+              })
+          ),
+      );
+
+      querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
+        if (new Date().getTime() > Math.min(...doc.data().expirationDates.map(date => new Date(moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD')).getTime()))) {
+          productsByCategory.value.week.values.push({...doc.data(), id: doc.id});
+        } else if (!productsByCategory.value.week.values.map(product => product.id).includes(doc.data().id)) {
+          productsByCategory.value.month.values.push({...doc.data(), id: doc.id});
+        }
+      });
+
+      productsByCategory.value.month.loading = false;
+
+      q = query(collection(db, "products"),
+          where("user", "==", getAuth().currentUser.uid),
+          where("finishedAt", "!=", false)
+      );
+
+      querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
+        productsByCategory.value.finished.values.push({...doc.data(), id: doc.id});
+      });
+
+      productsByCategory.value.finished.loading = false;
+
+      q = query(collection(db, "products"),
+          where("user", "==", getAuth().currentUser.uid),
+          where("id", "not-in", [
+            ...productsByCategory.value.finished.values.map(product => product.id),
+            ...productsByCategory.value.week.values.map(product => product.id),
+            ...productsByCategory.value.month.values.map(product => product.id)
+          ])
+      );
+
+      querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach((doc) => {
+
+        if (new Date().getTime() > Math.min(...doc.data().expirationDates.map(date => new Date(moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD')).getTime()))) {
+          productsByCategory.value.week.values.push({...doc.data(), id: doc.id});
+        } else {
+          productsByCategory.value.other.values.push({...doc.data(), id: doc.id});
+        }
+      });
+
+      productsByCategory.value.other.loading = false;
+
+      for (const key in productsByCategory.value) {
+        if (key === 'finished') {
+          productsByCategory.value[key].values.sort((a, b) => {
+            return new Date(moment(b.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD')) - new Date(moment(a.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD'));
+          })
+        } else {
+          productsByCategory.value[key].values.sort((a, b) => {
+            return Math.min(...a.expirationDates.map(date => new Date(moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD')).getTime()))
+                - Math.min(...b.expirationDates.map(date => new Date(moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD')).getTime()));
+          })
+        }
+      }
     }
-  });
-
-  for (const key in productsByCategory.value) {
-    if (key === 'finished') {
-      productsByCategory.value[key].sort((a, b) => {
-        return new Date(moment(b.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD')) - new Date(moment(a.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD'));
-      })
-    } else {
-      productsByCategory.value[key].sort((a, b) => {
-        return new Date(moment(a.expirationDate, 'DD/MM/YYYY').format('YYYY-MM-DD')) - new Date(moment(b.expirationDate, 'DD/MM/YYYY').format('YYYY-MM-DD'));
-      })
-    }
-  }
-});
+);
 </script>
 
 <template>

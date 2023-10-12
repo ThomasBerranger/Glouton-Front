@@ -9,19 +9,19 @@ let categoryClosed = ref(true);
 <template>
   <div class="my-5 bg-white shadow">
     <div class="flex justify-between p-3 items-center w-screen" @click="categoryClosed = !categoryClosed">
-      <h2>{{ categoryName }} <span class="text-xs font-bold small-indicator">{{ products.length }}</span></h2>
+      <h2>{{ categoryName }} <span class="text-xs font-bold small-indicator">{{ props.products.values.length }}</span></h2>
       <font-awesome-icon v-if="categoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>
       <font-awesome-icon v-else icon="fa-solid fa-chevron-up"></font-awesome-icon>
     </div>
 
-    <div v-if="props.products.length === 0" class="flex justify-center items-center px-3 h-24">
+    <div v-if="props.products.loading" class="flex justify-center items-center px-3 h-24">
       <font-awesome-icon icon="fa-solid fa-circle-notch" spin class="h-6"></font-awesome-icon>
     </div>
 
     <Transition mode="out-in" v-else>
       <div v-if="categoryClosed" class="relative overflow-auto px-3">
         <div class="w-full flex gap-2 snap-x overflow-x-auto pb-5">
-          <div v-for="product in products" class="snap-start scroll-ml-6 shrink-0 relative" :key="product.id">
+          <div v-for="product in props.products.values" class="snap-start scroll-ml-6 shrink-0 relative" :key="product.id">
 
             <RouterLink :to="'/product/' + product.id">
               <img class="relative h-16 mx-auto rounded-sm"
@@ -33,7 +33,7 @@ let categoryClosed = ref(true);
       </div>
       <div v-else class="w-screen flex flex-wrap px-2 pb-3">
 
-        <RouterLink v-for="product in products" :to="'/product/' + product.id">
+        <RouterLink v-for="product in props.products.values" :to="'/product/' + product.id">
           <img class="relative h-16 px-1 mb-2" :src="product.image">
         </RouterLink>
 
