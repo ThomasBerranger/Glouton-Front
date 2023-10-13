@@ -1,15 +1,15 @@
 <script setup>
 import {useRoute} from "vue-router";
+import router from "@/router";
 import {onMounted, ref, watch} from "vue";
-import {collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where} from "firebase/firestore";
+import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {getApp} from "firebase/app";
-import EatButton from "@/components/EatButton.vue";
+import {doc, getDoc, getFirestore} from "firebase/firestore";
+import {remove, update} from "@/functions/product";
 import moment from "moment";
+import EatButton from "@/components/EatButton.vue";
 import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
-import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
-import router from "@/router";
-import {refill, remove} from "@/functions/product";
 
 const db = getFirestore(getApp());
 const route = useRoute();
@@ -17,63 +17,48 @@ const route = useRoute();
 let productId = ref('');
 productId = route.params.id;
 
-const productRef = doc(db, "products", productId);
-
 let product = ref({});
 let displayDatepicker = ref(false);
-let notification = ref({
-  show: false,
-  message: '',
-  timeout: 3000
-});
 let selectedExpirationDate = ref({key: null, value: null});
+let notification = ref({show: false, message: '', timeout: 3000});
 
 onMounted(async () => {
-  const docRef = doc(db, "products", productId);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    product.value = {...docSnap.data(), id: docSnap.id};
-  } else {
-    console.error("No product found");
-  }
+  getDoc(doc(db, "products", productId)).then((data) => {
+    product.value = {...data.data(), id: data.id};
+  })
 });
 
 watch(product, async () => {
-  await updateDoc(productRef, product.value);
+  await update(product.value);
 }, {deep: true})
 
 async function finish() {
-  await updateDoc(productRef, {
-    finishedAt: moment().format('L'),
-    expirationDates: product.value.expirationDates.splice(1),
-    toPurchase: true,
-  }).then(() => {
-    product.value.finishedAt = moment().format('L');
-    product.value.toPurchase = true;
+  product.value.finishedAt = moment().format('L');
+  product.value.toPurchase = true;
+  product.value.expirationDates.splice(1);
+
+  update(product.value).then(() => {
     notification.value.show = true;
     notification.value.message = `${product.value.name} a été jouté à la liste de courses.`;
-  });
+  })
 }
 
 async function updateShoppingList(add = true) {
-  await updateDoc(productRef, {
-    toPurchase: add,
-  }).then(() => {
-    product.value.toPurchase = add;
+  product.value.toPurchase = add;
+  update(product.value).then(() => {
     notification.value.show = true;
     notification.value.message = `${product.value.name} a été ${add ? 'ajouté à' : 'retiré de'} la liste de courses.`;
   });
 }
 
-function refillProduct() {
-  selectedExpirationDate.value.key = 0;
-  selectedExpirationDate.value.value = product.value.expirationDates[0];
-  displayDatepicker.value = true;
+function refill() {
+  product.value.finishedAt = false;
+  product.value.toPurchase = false;
 
-  refill(productRef).then(() => {
-    product.value.finishedAt = false;
-    product.value.toPurchase = false;
+  update(product.value).then(() => {
+    selectedExpirationDate.value.key = 0;
+    selectedExpirationDate.value.value = product.value.expirationDates[0];
+    displayDatepicker.value = true;
   })
 }
 </script>
@@ -82,18 +67,16 @@ function refillProduct() {
 
   <NotificationContainer :notification="notification" @close="notification.show = false"/>
 
-  <section v-if="! product.name"
-           class="w-screen screen-height flex flex-1 flex-col justify-center items-center">
+  <section v-if="! product.code"
+           class="w-screen screen-height flex justify-center items-center">
     <font-awesome-icon icon="fa-solid fa-circle-notch" spin class="h-12"></font-awesome-icon>
   </section>
-  <section v-else
-           class="w-screen screen-height flex flex-1 flex-col justify-center">
-
+  <section v-else class="w-screen flex justify-center mt-10">
     <div class="bg-white py-5 shadow">
 
       <h1 class="text-2xl text-center px-4 pb-4 truncate">{{ product.name }}</h1>
 
-      <img class="h-60 mx-auto px-2" :src="product.image" :alt="product.name"/>
+      <img class="w-1/3 mx-auto px-2" :src="product.image" :alt="product.name"/>
 
       <div class="flex flex-wrap justify-center">
         <label for="name" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Nom du
@@ -103,32 +86,40 @@ function refillProduct() {
 
         <div v-if="!product.finishedAt" v-for="(expirationDate, key) in product.expirationDates" :key="key"
              class="w-4/5">
-          <label v-if="key === 0" for="expirationDate" class="w-4/5 text-sm font-medium leading-6 text-gray-900">Date de
+          <label v-if="key === 0" for="expirationDate"
+                 class="w-4/5 text-sm font-medium leading-6 text-gray-900">Date{{ product.expirationDates.length > 1 ? 's' : null }}
+            de
             péremption</label>
-          <div class="h-8 my-2 grid grid-cols-12">
+          <div class="h-8 mb-2 grid grid-cols-12">
             <input type="text" name="expirationDate" id="expirationDate" placeholder="? / ? / ?"
                    v-model="product.expirationDates[key]"
                    @click="displayDatepicker = true; selectedExpirationDate.key = key; selectedExpirationDate.value = product.expirationDates[key];"
                    readonly
-                   :class="new Date((moment(expirationDate, 'DD/MM/YYYY').format('YYYY-MM-DD'))) > new Date() ?
-               (new Date((moment(expirationDate, 'DD/MM/YYYY').subtract(1, 'week').format('YYYY-MM-DD'))) > new Date() ? null : 'bg-orange-200') : 'bg-red-200',
+                   :class="new Date((moment(expirationDate, 'L').format('YYYY-MM-DD'))) > new Date() ?
+               (new Date((moment(expirationDate, 'L').subtract(1, 'week').format('YYYY-MM-DD'))) > new Date() ? null : 'bg-orange-200') : 'bg-red-200',
                product.expirationDates.length === 1 ? 'col-span-12 rounded-md' : 'col-span-10 rounded-tl-md rounded-bl-md'"
                    class="text-center h-full shadow-md ring-1 ring-inset text-sm"/>
             <button v-if="product.expirationDates.length > 1" type="button"
-                    @click="product.expirationDates.splice(key, 1)"
+                    @click="product.expirationDates.splice(key, 1);"
                     class="col-span-2 rounded-tr-md rounded-br-md shadow-md bg-red-400 text-sm font-semibold text-white">
               <font-awesome-icon icon="fa-solid fa-xmark" class="text-xl"/>
             </button>
           </div>
         </div>
 
-        <button v-if="!product.finishedAt" type="button" @click="product.expirationDates.push(null)"
+        <button v-if="!product.finishedAt" type="button"
+                @click="
+                  product.expirationDates.push(null);
+                  displayDatepicker = true;
+                  selectedExpirationDate.key = product.expirationDates.length-1;
+                  selectedExpirationDate.value = product.expirationDates[product.expirationDates.length-1];
+                "
                 class="rounded-md shadow-md bg-amber-300 pt-1 mt-2 text-sm font-semibold text-white w-4/5">
           <font-awesome-icon icon="fa-solid fa-plus" class="text-xl"/>
         </button>
 
         <DatepickerContainer :display="displayDatepicker && product"
-                             :date="selectedExpirationDate.value ?? moment().format('DD/MM/YYYY')"
+                             :date="selectedExpirationDate.value ?? moment().format('L')"
                              @update-date="(newDate) => { product.expirationDates[selectedExpirationDate.key] = newDate; displayDatepicker = false; }"/>
 
         <label for="image" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Lien de
@@ -146,12 +137,11 @@ function refillProduct() {
                 :class="[product.toPurchase ? 'bg-green-500' : 'bg-red-400']">
           <font-awesome-icon icon="fa-solid fa-cart-shopping"/>
         </button>
-        <button v-if="product.finishedAt" @click="refillProduct"
+        <button v-if="product.finishedAt" @click="refill"
                 class="rounded-md border-2 px-2.5 py-1.5 text-sm font-medium shadow-sm">
           J'en ai acheté
         </button>
-        <button class="rounded-md px-2.5 py-1.5 text-sm font-medium shadow-sm text-white"
-                style="background-color: #0e3b4c"
+        <button class="rounded-md px-2.5 py-1.5 text-sm font-medium shadow-sm text-white bg-black"
                 @click="remove(product).then(() => router.push('/'))">
           <font-awesome-icon icon="fa-solid fa-trash"/>
         </button>
@@ -160,4 +150,6 @@ function refillProduct() {
     </div>
 
   </section>
+
+  <div class="h-20"></div>
 </template>

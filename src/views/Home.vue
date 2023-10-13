@@ -96,7 +96,7 @@ onMounted(async () => {
         });
 
         productsByCategory.value.finished.values.sort((a, b) => {
-          return new Date(moment(b.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD')) - new Date(moment(a.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD'));
+          return new Date(moment(b.finishedAt, 'L').format('YYYY-MM-DD')) - new Date(moment(a.finishedAt, 'L').format('YYYY-MM-DD'));
         })
 
         resolve();
@@ -108,6 +108,8 @@ onMounted(async () => {
 </script>
 
 <template>
+  <div class="h-5"></div>
+
   <HorizontalList :products="productsByCategory.week" category-name="Périme dans la semaine"/>
   <HorizontalList :products="productsByCategory.month" category-name="Périme dans le mois"/>
   <HorizontalList :products="productsByCategory.other" category-name="Périme dans longtemps"/>

@@ -140,7 +140,7 @@ async function saveProduct() {
       </button>
 
       <DatepickerContainer :display="displayDatepicker && product"
-                           :date="selectedExpirationDate.value ?? moment().format('DD/MM/YYYY')"
+                           :date="selectedExpirationDate.value ?? moment().format('L')"
                            @update-date="(newDate) => { product.expirationDates[selectedExpirationDate.key] = newDate; displayDatepicker = false; }"/>
 
       <div class="mt-5 grid grid-cols-2 text-center">

@@ -4,13 +4,6 @@ import {getApp} from "firebase/app";
 const db = getFirestore(getApp());
 let productRef = null;
 
-async function refill(productRef) {
-    await updateDoc(productRef, {
-        finishedAt: false,
-        toPurchase: false,
-    });
-}
-
 async function update(product) {
     productRef = doc(db, "products", product.id);
 
@@ -27,4 +20,4 @@ async function remove(product) {
     await deleteDoc(doc(db, 'products', product.id));
 }
 
-export {refill, remove, updateExpirationDate, update};
+export {remove, updateExpirationDate, update};
