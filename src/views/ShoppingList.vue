@@ -4,45 +4,40 @@ import {collection, doc, getDocs, getFirestore, query, updateDoc, where} from "f
 import {getApp} from "firebase/app";
 import {getAuth} from "firebase/auth";
 import {RouterLink} from "vue-router";
+import {update} from "@/functions/product"
 import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
-import {update, updateExpirationDate} from "@/functions/product"
 
 let products = ref([]);
-let displayDatepicker = ref(false);
 let productToRefill = ref({});
+let displayDatepicker = ref(false);
 let selectedExpirationDate = ref({key: null, value: null});
-
-let notification = ref({
-  show: false,
-  message: '',
-  timeout: 3000
-});
+let notification = ref({show: false, message: '', timeout: 3000});
 
 const db = getFirestore(getApp());
-const q = query(
-    collection(db, "products"),
-    where("user", "==", getAuth().currentUser.uid),
-    where('finishedAt', '!=', null)
-);
 
 onMounted(async () => {
-  const querySnapshot = await getDocs(q);
+  getDocs(
+      query(
+          collection(db, "products"),
+          where("user", "==", getAuth().currentUser.uid),
+          where('finishedAt', '!=', null)
+      )
+  ).then((documents) => {
+    documents.forEach((doc) => {
+      products.value.push({...doc.data(), id: doc.id});
+    })
 
-  querySnapshot.forEach((doc) => {
-    products.value.push({...doc.data(), ...{id: doc.id}});
+    products.value.sort((a, b) => {
+      return b.finishedAt - a.finishedAt;
+    })
   });
-
-  products.value.sort((a, b) => {
-    return b.finishedAt - a.finishedAt;
-  })
 });
 
-async function removeProductFormShoppingList(product) {
+async function removeFromShoppingList(product) {
   product.toPurchase = false;
 
   update(product).then(() => {
-    product.toPurchase = false;
     notification.value.message = `${product.name} a été retiré de la liste de courses.`;
     notification.value.show = true;
   });
@@ -81,7 +76,7 @@ function refill(newDate) {
                 class="bg-green-500 text-sm font-semibold text-white shadow-sm col-span-1 h-full">
           <font-awesome-icon icon="fa-solid fa-check" class="text-xl"/>
         </button>
-        <button type="button" @click="removeProductFormShoppingList(product)"
+        <button type="button" @click="removeFromShoppingList(product)"
                 class="bg-red-400 text-sm font-semibold text-white shadow-sm col-span-1 h-full">
           <font-awesome-icon icon="fa-solid fa-xmark" class="text-xl"/>
         </button>

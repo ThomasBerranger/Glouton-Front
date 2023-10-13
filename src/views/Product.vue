@@ -87,9 +87,8 @@ function refill() {
         <div v-if="!product.finishedAt" v-for="(expirationDate, key) in product.expirationDates" :key="key"
              class="w-4/5">
           <label v-if="key === 0" for="expirationDate"
-                 class="w-4/5 text-sm font-medium leading-6 text-gray-900">Date{{ product.expirationDates.length > 1 ? 's' : null }}
-            de
-            péremption</label>
+                 class="w-4/5 text-sm font-medium leading-6 text-gray-900">
+            Date{{ product.expirationDates.length > 1 ? 's' : null }} de péremption</label>
           <div class="h-8 mb-2 grid grid-cols-12">
             <input type="text" name="expirationDate" id="expirationDate" placeholder="? / ? / ?"
                    v-model="product.expirationDates[key]"
