@@ -72,7 +72,7 @@ function refill() {
     <font-awesome-icon icon="fa-solid fa-circle-notch" spin class="h-12"></font-awesome-icon>
   </section>
   <section v-else class="w-screen flex justify-center mt-10">
-    <div class="bg-white py-5 shadow">
+    <div class="bg-white py-5 shadow w-screen">
 
       <h1 class="text-2xl text-center px-4 pb-4 truncate">{{ product.name }}</h1>
 
@@ -133,14 +133,14 @@ function refill() {
         <EatButton v-if="!product.finishedAt" @click="finish"/>
         <button v-else @click="updateShoppingList(!product.toPurchase)"
                 class="rounded-md px-2.5 py-1.5 text-sm font-medium text-white shadow-sm"
-                :class="[product.toPurchase ? 'bg-green-500' : 'bg-red-400']">
+                :class="[product.toPurchase ? 'bg-green-400' : 'bg-red-400']">
           <font-awesome-icon icon="fa-solid fa-cart-shopping"/>
         </button>
         <button v-if="product.finishedAt" @click="refill"
                 class="rounded-md border-2 px-2.5 py-1.5 text-sm font-medium shadow-sm">
           J'en ai acheté
         </button>
-        <button class="rounded-md px-2.5 py-1.5 text-sm font-medium shadow-sm text-white bg-black"
+        <button class="rounded-md px-2.5 py-1.5 text-sm font-medium shadow-sm text-white bg-custom-black"
                 @click="remove(product).then(() => router.push('/'))">
           <font-awesome-icon icon="fa-solid fa-trash"/>
         </button>

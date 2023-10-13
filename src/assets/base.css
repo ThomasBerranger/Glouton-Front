@@ -60,3 +60,7 @@ footer {
     transform: translate(-50%, 0);
     width: 90vw;
 }
+
+.bg-custom-black {
+    background-color: #0e3b4c;
+}
