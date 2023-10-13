@@ -16,95 +16,93 @@ let productsByCategory = ref({
 const db = getFirestore(getApp());
 
 onMounted(async () => {
-      let q = query(
-          collection(db, "products"),
-          where("user", "==", getAuth().currentUser.uid),
-          where("finishedAt", "==", false),
-          where('expirationDates', 'array-contains-any',
-              Array.from({length: 7}, (_, index) => {
-                return moment().add(index, 'day').format('DD/MM/YYYY');
-              })
+      // Get all unfinished products
+      new Promise(async (resolve) => {
+        const unfinishedProducts = [];
+        const querySnapshot = await getDocs(
+            query(
+                collection(db, "products"),
+                where("user", "==", getAuth().currentUser.uid),
+                where("finishedAt", "==", false),
+            )
+        );
+
+        querySnapshot.forEach((doc) => {
+          unfinishedProducts.push({...doc.data(), id: doc.id});
+        });
+
+        resolve(unfinishedProducts);
+      }).then((unfinishedProducts) => {
+        // Fill week products category
+        new Promise((resolve) => {
+          productsByCategory.value.week.values = unfinishedProducts.filter(product =>
+              moment().add(1, 'week').valueOf() >= Math.min(...product.expirationDates.map(date => moment(date, 'L').valueOf()))
           )
-      );
 
-      let querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach((doc) => {
-        productsByCategory.value.week.values.push({...doc.data(), id: doc.id});
-      });
-
-      productsByCategory.value.week.loading = false;
-
-      q = query(
-          collection(db, "products"),
-          where("user", "==", getAuth().currentUser.uid),
-          where("finishedAt", "==", false),
-          where('expirationDates', 'array-contains-any',
-              Array.from({length: 24}, (_, index) => {
-                return moment().add(7 + index, 'day').format('DD/MM/YYYY');
-              })
-          ),
-      );
-
-      querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach((doc) => {
-        if (new Date().getTime() > Math.min(...doc.data().expirationDates.map(date => new Date(moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD')).getTime()))) {
-          productsByCategory.value.week.values.push({...doc.data(), id: doc.id});
-        } else if (!productsByCategory.value.week.values.map(product => product.id).includes(doc.data().id)) {
-          productsByCategory.value.month.values.push({...doc.data(), id: doc.id});
-        }
-      });
-
-      productsByCategory.value.month.loading = false;
-
-      q = query(collection(db, "products"),
-          where("user", "==", getAuth().currentUser.uid),
-          where("finishedAt", "!=", false)
-      );
-
-      querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach((doc) => {
-        productsByCategory.value.finished.values.push({...doc.data(), id: doc.id});
-      });
-
-      productsByCategory.value.finished.loading = false;
-
-      q = query(collection(db, "products"),
-          where("user", "==", getAuth().currentUser.uid),
-          where("id", "not-in", [
-            ...productsByCategory.value.finished.values.map(product => product.id),
-            ...productsByCategory.value.week.values.map(product => product.id),
-            ...productsByCategory.value.month.values.map(product => product.id)
-          ])
-      );
-
-      querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach((doc) => {
-
-        if (new Date().getTime() > Math.min(...doc.data().expirationDates.map(date => new Date(moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD')).getTime()))) {
-          productsByCategory.value.week.values.push({...doc.data(), id: doc.id});
-        } else {
-          productsByCategory.value.other.values.push({...doc.data(), id: doc.id});
-        }
-      });
-
-      productsByCategory.value.other.loading = false;
-
-      for (const key in productsByCategory.value) {
-        if (key === 'finished') {
-          productsByCategory.value[key].values.sort((a, b) => {
-            return new Date(moment(b.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD')) - new Date(moment(a.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD'));
+          productsByCategory.value.week.values.sort((a, b) => {
+            return Math.min(...a.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()))
+                - Math.min(...b.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()));
           })
-        } else {
-          productsByCategory.value[key].values.sort((a, b) => {
-            return Math.min(...a.expirationDates.map(date => new Date(moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD')).getTime()))
-                - Math.min(...b.expirationDates.map(date => new Date(moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD')).getTime()));
+
+          resolve();
+        }).then(() => {
+          productsByCategory.value.week.loading = false
+        });
+        // Fill month products category
+        new Promise((resolve) => {
+          productsByCategory.value.month.values = unfinishedProducts.filter(product =>
+              moment().add(1, 'week').valueOf() < Math.min(...product.expirationDates.map(date => moment(date, 'L').valueOf()))
+              && moment().add(1, 'month').valueOf() >= Math.min(...product.expirationDates.map(date => moment(date, 'L').valueOf()))
+          )
+
+          productsByCategory.value.month.values.sort((a, b) => {
+            return Math.min(...a.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()))
+                - Math.min(...b.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()));
           })
-        }
-      }
+
+          resolve();
+        }).then(() => {
+          productsByCategory.value.month.loading = false
+        });
+        // Fill other products category
+        new Promise((resolve) => {
+          productsByCategory.value.other.values = unfinishedProducts.filter(product =>
+              moment().add(1, 'month').valueOf() < Math.min(...product.expirationDates.map(date => moment(date, 'L').valueOf()))
+          )
+
+          productsByCategory.value.other.values.sort((a, b) => {
+            return Math.min(...a.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()))
+                - Math.min(...b.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()));
+          })
+
+          resolve();
+        }).then(() => {
+          productsByCategory.value.other.loading = false
+        });
+      })
+
+      // Get finished products and fill category
+      new Promise(async (resolve) => {
+        const notFinishedProductsQuerySnapshot = await getDocs(
+            query(
+                collection(db, "products"),
+                where("user", "==", getAuth().currentUser.uid),
+                where("finishedAt", "!=", false),
+            )
+        );
+
+        notFinishedProductsQuerySnapshot.forEach((doc) => {
+          productsByCategory.value.finished.values.push({...doc.data(), id: doc.id});
+        });
+
+        productsByCategory.value.finished.values.sort((a, b) => {
+          return new Date(moment(b.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD')) - new Date(moment(a.finishedAt, 'DD/MM/YYYY').format('YYYY-MM-DD'));
+        })
+
+        resolve();
+      }).then(() => {
+        productsByCategory.value.finished.loading = false;
+      })
     }
 );
 </script>
