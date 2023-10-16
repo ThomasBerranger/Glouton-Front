@@ -1,8 +1,14 @@
-import {doc, getFirestore, deleteDoc, updateDoc} from "firebase/firestore";
+import {doc, getFirestore, deleteDoc, updateDoc, addDoc, collection} from "firebase/firestore";
 import {getApp} from "firebase/app";
+import {getAuth} from "firebase/auth";
+import router from "@/router";
 
 const db = getFirestore(getApp());
 let productRef = null;
+
+async function add(product) {
+    await addDoc(collection(db, 'products'), product)
+}
 
 async function update(product) {
     productRef = doc(db, "products", product.id);
@@ -10,14 +16,8 @@ async function update(product) {
     await updateDoc(productRef, product);
 }
 
-async function updateExpirationDate(productRef, newDate) {
-    await updateDoc(productRef, {
-        expirationDate: newDate,
-    });
-}
-
 async function remove(product) {
     await deleteDoc(doc(db, 'products', product.id));
 }
 
-export {remove, updateExpirationDate, update};
+export {add, update, remove};

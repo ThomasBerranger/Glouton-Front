@@ -1,7 +1,3 @@
-<script setup>
-import {RouterLink} from "vue-router";
-</script>
-
 <template>
   <div class="w-screen screen-height flex flex-1 flex-col justify-center pb-0">
 

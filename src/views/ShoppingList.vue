@@ -7,11 +7,11 @@ import {RouterLink} from "vue-router";
 import {update} from "@/functions/product"
 import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
+import moment from "moment";
 
 let products = ref([]);
 let productToRefill = ref({});
 let displayDatepicker = ref(false);
-let selectedExpirationDate = ref({key: null, value: null});
 let notification = ref({show: false, message: '', timeout: 3000});
 
 const db = getFirestore(getApp());
@@ -84,7 +84,8 @@ function refill(newDate) {
     </Transition>
   </div>
 
-  <DatepickerContainer :display="displayDatepicker && productToRefill" :date="productToRefill.expirationDates"
+  <DatepickerContainer :display="displayDatepicker && productToRefill"
+                       :date="productToRefill.expirationDates ? productToRefill.expirationDates[0] : moment().format('L')"
                        @update-date="(newDate) => { refill(newDate) }"/>
 
   <div class="h-20"></div>

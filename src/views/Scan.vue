@@ -6,12 +6,10 @@ import moment from "moment";
 import {Html5QrcodeScanner} from 'html5-qrcode';
 import {getAuth} from 'firebase/auth';
 import {getApp} from "firebase/app";
-import {getFirestore, collection, addDoc, doc, getDoc, query, where, getDocs} from 'firebase/firestore';
+import {getFirestore, collection, addDoc, query, where, getDocs} from 'firebase/firestore';
 import ScoreValue from "@/components/ScoreValue.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
-import logger from "@fortawesome/vue-fontawesome/src/logger";
-
-const db = getFirestore(getApp());
+import {add} from "@/functions/product";
 
 let scanActive = ref(true);
 let productNotFound = ref(false);
@@ -82,17 +80,15 @@ async function onScanSuccess(decodedText, decodedResult) {
 }
 
 async function saveProduct() {
-  await addDoc(collection(db, 'products'), {
+  add({
     code: product.value.code,
     user: getAuth().currentUser.uid,
     name: product.value.name,
     image: product.value.image,
     finishedAt: false,
     expirationDates: product.value.expirationDates,
-  }).then((data) => {
+  }).then(() => {
     router.push('/');
-  }).catch((error) => {
-    console.log(error);
   });
 }
 </script>
@@ -127,7 +123,8 @@ async function saveProduct() {
                  readonly
                  :class="[expirationDate ? 'ring-gray-300' : 'ring-red-400', product.expirationDates.length === 1 ? 'col-span-12 rounded-md' : 'col-span-10 rounded-tl-md rounded-bl-md']"
                  class="text-center h-full shadow-md ring-1 ring-inset text-sm"/>
-          <button v-if="product.expirationDates.length > 1" type="button" @click="product.expirationDates.splice(key, 1)"
+          <button v-if="product.expirationDates.length > 1" type="button"
+                  @click="product.expirationDates.splice(key, 1)"
                   class="col-span-2 rounded-tr-md rounded-br-md shadow-md bg-red-400 text-sm font-semibold text-white">
             <font-awesome-icon icon="fa-solid fa-xmark" class="text-xl"/>
           </button>
