@@ -10,6 +10,7 @@ import {getFirestore, collection, addDoc, query, where, getDocs} from 'firebase/
 import ScoreValue from "@/components/ScoreValue.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
 import {add} from "@/functions/product";
+import {renameScanTexts} from "@/functions/scan";
 
 let scanActive = ref(true);
 let productNotFound = ref(false);
@@ -25,7 +26,7 @@ let product = ref({
 });
 let selectedExpirationDate = ref({key: null, value: null});
 let availableImages = ref(null);
-const productDescription = computed(() => product.value.description.charAt(0).toUpperCase() + product.value.description.slice(1).toLowerCase())
+const productDescription = computed(() => product.value.description ? product.value.description.charAt(0).toUpperCase() + product.value.description.slice(1).toLowerCase() : '')
 
 onMounted(() => {
   const html5QrcodeScanner = new Html5QrcodeScanner(
@@ -36,9 +37,12 @@ onMounted(() => {
       },
       false
   );
+
   html5QrcodeScanner.render(onScanSuccess, (error) => {
     console.error(error)
   });
+
+  renameScanTexts();
 });
 
 async function onScanSuccess(decodedText, decodedResult) {
