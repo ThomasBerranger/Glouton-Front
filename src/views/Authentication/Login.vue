@@ -25,7 +25,7 @@ const onSubmit = () => {
   <div class="w-screen screen-height flex flex-1 flex-col justify-center">
 
     <div class="w-full">
-      <img class="mx-auto h-20 w-auto" src="/public/logo.webp" alt="Your Company"/>
+      <img class="mx-auto h-20 w-auto" src="/public/logo.png" alt="Glouton"/>
       <h2 class="mt-5 text-center text-2xl leading-9 tracking-tight text-gray-900">Connexion</h2>
     </div>
 

@@ -10,6 +10,7 @@ import moment from "moment";
 import EatButton from "@/components/EatButton.vue";
 import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
+import ScoresValue from "@/components/ScoresValue.vue";
 
 const db = getFirestore(getApp());
 const route = useRoute();
@@ -71,10 +72,13 @@ function refill() {
            class="w-screen screen-height flex justify-center items-center">
     <font-awesome-icon icon="fa-solid fa-circle-notch" spin class="h-12"></font-awesome-icon>
   </section>
-  <section v-else class="w-screen flex justify-center mt-10">
-    <div class="bg-white py-5 shadow w-screen">
+  <section v-else>
+    <div class="bg-white py-5 w-screen">
 
-      <h1 class="text-2xl text-center px-4 pb-4 truncate">{{ product.name }}</h1>
+      <h1 class="text-lg px-4 pb-4 truncate" @click="this.$router.go(-1)">
+        <font-awesome-icon icon="fa-solid fa-arrow-left-long"></font-awesome-icon>
+        {{ product.name }}
+      </h1>
 
       <img class="w-1/3 mx-auto px-2" :src="product.image" :alt="product.name"/>
 
@@ -97,7 +101,7 @@ function refill() {
                    :class="new Date((moment(expirationDate, 'L').format('YYYY-MM-DD'))) > new Date() ?
                (new Date((moment(expirationDate, 'L').subtract(1, 'week').format('YYYY-MM-DD'))) > new Date() ? null : 'bg-orange-200') : 'bg-red-200',
                product.expirationDates.length === 1 ? 'col-span-12 rounded-md' : 'col-span-10 rounded-tl-md rounded-bl-md'"
-                   class="text-center h-full shadow-md ring-1 ring-inset text-sm"/>
+                   class="text-center shadow-md ring-1 ring-inset text-sm"/>
             <button v-if="product.expirationDates.length > 1" type="button"
                     @click="product.expirationDates.splice(key, 1);"
                     class="col-span-2 rounded-tr-md rounded-br-md shadow-md bg-red-400 text-sm font-semibold text-white">
@@ -120,6 +124,17 @@ function refill() {
         <DatepickerContainer :display="displayDatepicker && product"
                              :date="selectedExpirationDate.value ?? moment().format('L')"
                              @update-date="(newDate) => { product.expirationDates[selectedExpirationDate.key] = newDate; displayDatepicker = false; }"/>
+
+        <ScoresValue :product="product"/>
+
+        <div v-if="product.description" class="grid grid-cols-12 w-4/5">
+          <div class="col-span-1">
+            <font-awesome-icon icon="fa-regular fa-file-lines" class="mx-2 text-xl mt-1 float-left"></font-awesome-icon>
+          </div>
+          <div class="col-span-11 pt-1 pl-2">
+            {{ product.description }}
+          </div>
+        </div>
 
         <label for="image" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Lien de
           l'image</label>
