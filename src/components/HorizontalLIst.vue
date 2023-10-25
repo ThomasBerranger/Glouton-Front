@@ -9,7 +9,7 @@ let categoryClosed = ref(true);
 <template>
   <div class="my-5 bg-white shadow">
     <div class="flex justify-between p-3 items-center w-screen" @click="categoryClosed = !categoryClosed">
-      <h2>{{ categoryName }} <span class="text-xs font-bold small-indicator">{{ props.products.values.length }}</span></h2>
+      <h2>{{ categoryName }} <span class="text-xs font-bold green-color">{{ props.products.values.length }}</span></h2>
       <font-awesome-icon v-if="categoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>
       <font-awesome-icon v-else icon="fa-solid fa-chevron-up"></font-awesome-icon>
     </div>

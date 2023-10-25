@@ -86,7 +86,7 @@ function refill() {
         <label for="name" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Nom du
           produit</label>
         <input type="text" name="name" id="name" v-model="product.name"
-               class="text-center w-4/5 rounded-md border-0 p-1.5 mb-2 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
+               class="text-center w-4/5 mb-4 rounded-md border-0 p-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"/>
 
         <div v-if="!product.finishedAt" v-for="(expirationDate, key) in product.expirationDates" :key="key"
              class="w-4/5">
@@ -101,7 +101,7 @@ function refill() {
                    :class="new Date((moment(expirationDate, 'L').format('YYYY-MM-DD'))) > new Date() ?
                (new Date((moment(expirationDate, 'L').subtract(1, 'week').format('YYYY-MM-DD'))) > new Date() ? null : 'bg-orange-200') : 'bg-red-200',
                product.expirationDates.length === 1 ? 'col-span-12 rounded-md' : 'col-span-10 rounded-tl-md rounded-bl-md'"
-                   class="text-center shadow-md ring-1 ring-inset text-sm"/>
+                   class="text-center shadow-md ring-1 ring-inset ring-gray-300 text-sm"/>
             <button v-if="product.expirationDates.length > 1" type="button"
                     @click="product.expirationDates.splice(key, 1);"
                     class="col-span-2 rounded-tr-md rounded-br-md shadow-md bg-red-400 text-sm font-semibold text-white">
@@ -117,7 +117,7 @@ function refill() {
                   selectedExpirationDate.key = product.expirationDates.length-1;
                   selectedExpirationDate.value = product.expirationDates[product.expirationDates.length-1];
                 "
-                class="rounded-md shadow-md bg-amber-300 pt-1 mt-2 text-sm font-semibold text-white w-4/5">
+                class="rounded-md shadow-md bg-amber-300 pt-1 mt-1 text-sm font-semibold text-white w-4/5">
           <font-awesome-icon icon="fa-solid fa-plus" class="text-xl"/>
         </button>
 
@@ -125,18 +125,9 @@ function refill() {
                              :date="selectedExpirationDate.value ?? moment().format('L')"
                              @update-date="(newDate) => { product.expirationDates[selectedExpirationDate.key] = newDate; displayDatepicker = false; }"/>
 
-        <ScoresValue :product="product"/>
+        <ScoresValue :product="product" class="mt-3 px-5"/>
 
-        <div v-if="product.description" class="grid grid-cols-12 w-4/5">
-          <div class="col-span-1">
-            <font-awesome-icon icon="fa-regular fa-file-lines" class="mx-2 text-xl mt-1 float-left"></font-awesome-icon>
-          </div>
-          <div class="col-span-11 pt-1 pl-2">
-            {{ product.description }}
-          </div>
-        </div>
-
-        <label for="image" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Lien de
+        <label for="image" class="w-4/5 mt-2 text-sm font-medium leading-6 text-gray-900">Lien de
           l'image</label>
         <input type="text" name="image" id="image" v-model="product.image"
                class="w-4/5 rounded-md border-0 px-3 py-1.5 shadow-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6 truncate"/>
@@ -155,7 +146,7 @@ function refill() {
                 class="rounded-md border-2 px-2.5 py-1.5 text-sm font-medium shadow-sm">
           J'en ai acheté
         </button>
-        <button class="rounded-md px-2.5 py-1.5 text-sm font-medium shadow-sm text-white bg-custom-black"
+        <button class="rounded-md px-2.5 py-1.5 text-sm font-medium shadow-sm text-white black-background"
                 @click="remove(product).then(() => router.push('/'))">
           <font-awesome-icon icon="fa-solid fa-trash"/>
         </button>

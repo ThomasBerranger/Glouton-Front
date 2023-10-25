@@ -1,10 +1,11 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import {collection, query, where, getDocs, getFirestore} from "firebase/firestore";
+import {collection, query, where, getDocs, getFirestore, doc, updateDoc} from "firebase/firestore";
 import {getApp} from "firebase/app";
 import {getAuth} from "firebase/auth";
 import HorizontalList from "@/components/HorizontalLIst.vue";
 import moment from "moment";
+import {RouterLink} from "vue-router";
 
 let productsByCategory = ref({
   week: {values: [], loading: true},
@@ -110,10 +111,30 @@ onMounted(async () => {
 <template>
   <div class="h-5"></div>
 
+
+  <div class="w-screen flex justify-evenly">
+    <button class=" text-sm rounded-sm green-background px-3.5 py-1.5 font-medium text-white uppercase">
+      Semaine
+    </button>
+    <button
+        class="text-sm rounded-sm green-color px-2.5 py-1.5 font-medium uppercase tracking-wide ring-inset ring-1 green-ring">
+      Mois
+    </button>
+    <button
+        class="text-sm rounded-sm green-color px-2.5 py-1.5 font-medium uppercase tracking-wide ring-inset ring-1 green-ring">
+      Autre
+    </button>
+    <button
+        class="text-sm rounded-sm green-color px-2.5 py-1.5 font-medium uppercase tracking-wide ring-inset ring-1 green-ring">
+      Terminé
+    </button>
+  </div>
+
+
   <HorizontalList :products="productsByCategory.week" category-name="Périme dans la semaine"/>
-  <HorizontalList :products="productsByCategory.month" category-name="Périme dans le mois"/>
-  <HorizontalList :products="productsByCategory.other" category-name="Périme dans longtemps"/>
-  <HorizontalList :products="productsByCategory.finished" category-name="Terminé"/>
+  <!--  <HorizontalList :products="productsByCategory.month" category-name="Périme dans le mois"/>-->
+  <!--  <HorizontalList :products="productsByCategory.other" category-name="Périme dans longtemps"/>-->
+  <!--  <HorizontalList :products="productsByCategory.finished" category-name="Terminé"/>-->
 
   <div class="h-20"></div>
 </template>

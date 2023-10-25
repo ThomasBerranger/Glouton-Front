@@ -38,7 +38,6 @@ onMounted(() => {
 });
 
 async function onScanSuccess(decodedText, decodedResult) {
-  console.log(decodedText);
   const db = getFirestore(getApp());
   const q = query(
       collection(db, "products"),
