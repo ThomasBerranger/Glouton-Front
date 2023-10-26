@@ -1,55 +1,48 @@
 <script setup>
 import {RouterLink} from "vue-router";
-import {ref} from "vue";
+import {getNearestExpirationTimestampDate} from "@/functions/product";
+import moment from "moment";
 
-const props = defineProps(['products', 'categoryName']);
-let categoryClosed = ref(true);
+const props = defineProps(['products']);
+
+function getColor(product) {
+  return getNearestExpirationTimestampDate(product) <= moment().add(3, 'days').valueOf() ? 'red' : 'green';
+}
+
+function getTimeLeftForHuman(product) {
+  const nearestExpirationTimestampDate = getNearestExpirationTimestampDate(product);
+
+  let humanMessage = `${moment(nearestExpirationTimestampDate).startOf('day').from(moment().startOf('day'))}`;
+
+  if (moment(nearestExpirationTimestampDate).startOf('day').valueOf() === moment().startOf('day').valueOf()) {
+    humanMessage = 'aujourd\'hui';
+  } else if (moment(nearestExpirationTimestampDate).startOf('day').valueOf() === moment().startOf('day').add(1, 'day').valueOf()) {
+    humanMessage = 'demain';
+  }
+
+  return humanMessage[0].toUpperCase() + humanMessage.substring(1);
+}
 </script>
 
 <template>
-  <div class="my-5 bg-white shadow">
-    <div class="flex justify-between p-3 items-center w-screen" @click="categoryClosed = !categoryClosed">
-      <h2>{{ categoryName }} <span class="text-xs font-bold green-color">{{ props.products.values.length }}</span></h2>
-      <font-awesome-icon v-if="categoryClosed" icon="fa-solid fa-chevron-down"></font-awesome-icon>
-      <font-awesome-icon v-else icon="fa-solid fa-chevron-up"></font-awesome-icon>
-    </div>
+  <div class="mt-5 w-11/12 mx-auto">
 
     <div v-if="props.products.loading" class="flex justify-center items-center px-3 h-24">
       <font-awesome-icon icon="fa-solid fa-circle-notch" spin class="h-6"></font-awesome-icon>
     </div>
 
-    <Transition mode="out-in" v-else>
-      <div v-if="categoryClosed" class="relative overflow-auto px-3">
-        <div class="w-full flex gap-2 snap-x overflow-x-auto pb-5">
-          <div v-for="product in props.products.values" class="snap-start scroll-ml-6 shrink-0 relative" :key="product.id">
-
-            <RouterLink :to="'/product/' + product.id">
-              <img class="relative h-16 mx-auto rounded-sm"
-                   :src="product.image !== '' ? product.image : '/public/logo.png'">
-            </RouterLink>
-
-          </div>
+    <RouterLink v-for="product in props.products.values" :to="'/product/' + product.id">
+      <div class="grid grid-cols-12 bg-white my-3 shadow-md py-2 rounded-sm">
+        <img class="relative h-16 col-span-3 place-self-center rounded-sm" :src="product.image !== '' ? product.image : '/public/logo.png'">
+        <div class="col-span-9 my-auto px-1">
+          <p class="text-lg truncate">{{ product.name }}</p>
+          <span
+              :class="getColor(product) + '-color ' + getColor(product) + '-background-low-opacity px-1.5 py-1 text-xs'">{{
+              getTimeLeftForHuman(product)
+            }}</span>
         </div>
       </div>
-      <div v-else class="w-screen flex flex-wrap px-2 pb-3">
+    </RouterLink>
 
-        <RouterLink v-for="product in props.products.values" :to="'/product/' + product.id">
-          <img class="relative h-16 px-1 mb-2" :src="product.image">
-        </RouterLink>
-
-      </div>
-    </Transition>
   </div>
 </template>
-
-<style>
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.15s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-</style>

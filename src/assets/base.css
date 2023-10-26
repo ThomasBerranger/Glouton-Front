@@ -35,32 +35,8 @@ footer {
     height: 87vh;
 }
 
-.black-background {
-    background-color: #012A36;
-}
-
-.black-color {
-    color: #012A36;
-}
-
-.green-background {
-    background-color: #49A078;
-}
-
-.green-color {
-    color: #49A078;
-}
-
-.green-ring {
-    --tw-ring-color: #49A078;
-}
-
-.red-background {
-    background-color: #AC3931;
-}
-
-.red-color {
-    color: #AC3931;
+.screen-min-height {
+    height: 87vh;
 }
 
 .product-image {

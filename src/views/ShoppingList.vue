@@ -66,18 +66,18 @@ function refill(newDate) {
   </div>
 
   <div v-for='product in products' class="w-screen" :key="product.id">
-    <Transition name="slide-fade">
+    <Transition>
       <div v-if="product.toPurchase" class="grid grid-cols-11 shadow shopping-list-product">
         <RouterLink :to="'/product/' + product.id" class="col-span-2">
-          <img :src="product.image" :alt="product.name">
+          <img :src="product.image !== '' ? product.image : '/public/logo.png'" :alt="product.name">
         </RouterLink>
         <RouterLink :to="'/product/' + product.id" class="col-span-7 px-2 truncate">{{ product.name }}</RouterLink>
         <button type="button" @click="displayDatepicker = true; productToRefill = product;"
-                class="bg-green-500 text-sm font-semibold text-white shadow-sm col-span-1 h-full">
+                class="green-background text-sm font-semibold text-white shadow-sm col-span-1 h-full">
           <font-awesome-icon icon="fa-solid fa-check" class="text-xl"/>
         </button>
         <button type="button" @click="removeFromShoppingList(product)"
-                class="bg-red-400 text-sm font-semibold text-white shadow-sm col-span-1 h-full">
+                class="red-background text-sm font-semibold text-white shadow-sm col-span-1 h-full">
           <font-awesome-icon icon="fa-solid fa-xmark" class="text-xl"/>
         </button>
       </div>
@@ -99,12 +99,13 @@ function refill(newDate) {
   margin: 0.75rem 0 0.75rem 0;
 }
 
-.slide-fade-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.15s ease;
 }
 
-.slide-fade-leave-to {
-  transform: translateX(20px);
+.v-enter-from,
+.v-leave-to {
   opacity: 0;
 }
 </style>

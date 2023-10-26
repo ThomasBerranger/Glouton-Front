@@ -73,14 +73,14 @@ function refill() {
     <font-awesome-icon icon="fa-solid fa-circle-notch" spin class="h-12"></font-awesome-icon>
   </section>
   <section v-else>
-    <div class="bg-white py-5 w-screen">
+    <div class="bg-white w-screen screen-min-height pt-5">
 
       <h1 class="text-lg px-4 pb-4 truncate" @click="this.$router.go(-1)">
         <font-awesome-icon icon="fa-solid fa-arrow-left-long"></font-awesome-icon>
         {{ product.name }}
       </h1>
 
-      <img class="w-1/3 mx-auto px-2" :src="product.image" :alt="product.name"/>
+      <img class="w-1/3 mx-auto px-2" :src="product.image !== '' ? product.image : '/public/logo.png'" :alt="product.name"/>
 
       <div class="flex flex-wrap justify-center">
         <label for="name" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Nom du
@@ -98,13 +98,12 @@ function refill() {
                    v-model="product.expirationDates[key]"
                    @click="displayDatepicker = true; selectedExpirationDate.key = key; selectedExpirationDate.value = product.expirationDates[key];"
                    readonly
-                   :class="new Date((moment(expirationDate, 'L').format('YYYY-MM-DD'))) > new Date() ?
-               (new Date((moment(expirationDate, 'L').subtract(1, 'week').format('YYYY-MM-DD'))) > new Date() ? null : 'bg-orange-200') : 'bg-red-200',
+                   :class="new Date((moment(expirationDate, 'L').subtract(3, 'days').format('YYYY-MM-DD'))) > new Date() ? 'ring-gray-300 ring-1 ring-inset' : 'red-background-low-opacity',
                product.expirationDates.length === 1 ? 'col-span-12 rounded-md' : 'col-span-10 rounded-tl-md rounded-bl-md'"
-                   class="text-center shadow-md ring-1 ring-inset ring-gray-300 text-sm"/>
+                   class="text-center shadow-md text-sm"/>
             <button v-if="product.expirationDates.length > 1" type="button"
                     @click="product.expirationDates.splice(key, 1);"
-                    class="col-span-2 rounded-tr-md rounded-br-md shadow-md bg-red-400 text-sm font-semibold text-white">
+                    class="col-span-2 rounded-tr-md rounded-br-md shadow-md text-sm font-semibold red-background text-white">
               <font-awesome-icon icon="fa-solid fa-xmark" class="text-xl"/>
             </button>
           </div>
@@ -117,7 +116,7 @@ function refill() {
                   selectedExpirationDate.key = product.expirationDates.length-1;
                   selectedExpirationDate.value = product.expirationDates[product.expirationDates.length-1];
                 "
-                class="rounded-md shadow-md bg-amber-300 pt-1 mt-1 text-sm font-semibold text-white w-4/5">
+                class="rounded-md shadow-md pt-1 mt-1 text-sm font-semibold text-white w-4/5 green-background">
           <font-awesome-icon icon="fa-solid fa-plus" class="text-xl"/>
         </button>
 
@@ -139,22 +138,21 @@ function refill() {
         <EatButton v-if="!product.finishedAt" @click="finish"/>
         <button v-else @click="updateShoppingList(!product.toPurchase)"
                 class="rounded-md px-2.5 py-1.5 text-sm font-medium text-white shadow-sm"
-                :class="[product.toPurchase ? 'bg-green-400' : 'bg-red-400']">
+                :class="[product.toPurchase ? 'green-background' : 'red-background']">
           <font-awesome-icon icon="fa-solid fa-cart-shopping"/>
         </button>
         <button v-if="product.finishedAt" @click="refill"
                 class="rounded-md border-2 px-2.5 py-1.5 text-sm font-medium shadow-sm">
           J'en ai acheté
         </button>
-        <button class="rounded-md px-2.5 py-1.5 text-sm font-medium shadow-sm text-white black-background"
+        <button class="rounded-md px-2.5 py-1.5 text-sm font-medium shadow-sm text-white purple-background"
                 @click="remove(product).then(() => router.push('/'))">
           <font-awesome-icon icon="fa-solid fa-trash"/>
         </button>
       </div>
 
+      <div class="h-20"></div>
     </div>
 
   </section>
-
-  <div class="h-20"></div>
 </template>

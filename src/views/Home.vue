@@ -5,7 +5,7 @@ import {getApp} from "firebase/app";
 import {getAuth} from "firebase/auth";
 import HorizontalList from "@/components/HorizontalLIst.vue";
 import moment from "moment";
-import {RouterLink} from "vue-router";
+import {getNearestExpirationTimestampDate} from "@/functions/product";
 
 let productsByCategory = ref({
   week: {values: [], loading: true},
@@ -13,6 +13,7 @@ let productsByCategory = ref({
   finished: {values: [], loading: true},
   other: {values: [], loading: true}
 });
+let selectedCategory = ref('week');
 
 const db = getFirestore(getApp());
 
@@ -41,8 +42,7 @@ onMounted(async () => {
           )
 
           productsByCategory.value.week.values.sort((a, b) => {
-            return Math.min(...a.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()))
-                - Math.min(...b.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()));
+            return getNearestExpirationTimestampDate(a) - getNearestExpirationTimestampDate(b);
           })
 
           resolve();
@@ -57,8 +57,7 @@ onMounted(async () => {
           )
 
           productsByCategory.value.month.values.sort((a, b) => {
-            return Math.min(...a.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()))
-                - Math.min(...b.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()));
+            return getNearestExpirationTimestampDate(a) - getNearestExpirationTimestampDate(b);
           })
 
           resolve();
@@ -72,8 +71,7 @@ onMounted(async () => {
           )
 
           productsByCategory.value.other.values.sort((a, b) => {
-            return Math.min(...a.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()))
-                - Math.min(...b.expirationDates.map(date => new Date(moment(date, 'L').format('YYYY-MM-DD')).getTime()));
+            return getNearestExpirationTimestampDate(a) - getNearestExpirationTimestampDate(b);
           })
 
           resolve();
@@ -113,28 +111,42 @@ onMounted(async () => {
 
 
   <div class="w-screen flex justify-evenly">
-    <button class=" text-sm rounded-sm green-background px-3.5 py-1.5 font-medium text-white uppercase">
+    <button class="text-sm rounded-sm font-medium uppercase" @click="selectedCategory = 'week'"
+            :class="[selectedCategory === 'week' ? 'text-white green-background px-4 py-1.5' : 'green-color bg-white px-2 py-1.5 tracking-wide ring-inset ring-1 green-ring']">
       Semaine
     </button>
-    <button
-        class="text-sm rounded-sm green-color px-2.5 py-1.5 font-medium uppercase tracking-wide ring-inset ring-1 green-ring">
+    <button class="text-sm rounded-sm font-medium uppercase" @click="selectedCategory = 'month'"
+            :class="[selectedCategory === 'month' ? 'text-white green-background px-4 py-1.5' : 'green-color bg-white px-2 py-1.5 tracking-wide ring-inset ring-1 green-ring']">
       Mois
     </button>
-    <button
-        class="text-sm rounded-sm green-color px-2.5 py-1.5 font-medium uppercase tracking-wide ring-inset ring-1 green-ring">
-      Autre
+    <button class="text-sm rounded-sm font-medium uppercase" @click="selectedCategory = 'other'"
+            :class="[selectedCategory === 'other' ? 'text-white green-background px-4 py-1.5' : 'green-color bg-white px-2 py-1.5 tracking-wide ring-inset ring-1 green-ring']">
+      Année
     </button>
-    <button
-        class="text-sm rounded-sm green-color px-2.5 py-1.5 font-medium uppercase tracking-wide ring-inset ring-1 green-ring">
+    <button class="text-sm rounded-sm font-medium uppercase" @click="selectedCategory = 'finished'"
+            :class="[selectedCategory === 'finished' ? 'text-white green-background px-4 py-1.5' : 'green-color bg-white px-2 py-1.5 tracking-wide ring-inset ring-1 green-ring']">
       Terminé
     </button>
   </div>
 
-
-  <HorizontalList :products="productsByCategory.week" category-name="Périme dans la semaine"/>
-  <!--  <HorizontalList :products="productsByCategory.month" category-name="Périme dans le mois"/>-->
-  <!--  <HorizontalList :products="productsByCategory.other" category-name="Périme dans longtemps"/>-->
-  <!--  <HorizontalList :products="productsByCategory.finished" category-name="Terminé"/>-->
+  <Transition mode="out-in">
+    <HorizontalList v-if="selectedCategory === 'week'" :products="productsByCategory.week"/>
+    <HorizontalList v-else-if="selectedCategory === 'month'" :products="productsByCategory.month"/>
+    <HorizontalList v-else-if="selectedCategory === 'other'" :products="productsByCategory.other"/>
+    <HorizontalList v-else :products="productsByCategory.finished"/>
+  </Transition>
 
   <div class="h-20"></div>
 </template>
+
+<style>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.15s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>

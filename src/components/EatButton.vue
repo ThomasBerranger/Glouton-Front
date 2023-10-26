@@ -10,5 +10,5 @@ onMounted(() => {
 </script>
 
 <template>
-  <button class="rounded-md bg-red-400 px-2.5 py-1.5 text-sm font-medium text-white shadow-sm">{{ message }}</button>
+  <button class="rounded-md red-background px-2.5 py-1.5 text-sm font-medium text-white shadow-sm">{{ message }}</button>
 </template>

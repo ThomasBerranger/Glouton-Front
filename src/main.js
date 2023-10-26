@@ -1,4 +1,5 @@
 import './assets/main.css';
+import './assets/color.css';
 
 import {createApp} from 'vue';
 import App from './App.vue';
@@ -17,6 +18,7 @@ import {
     faUtensils, faXmark
 } from '@fortawesome/free-solid-svg-icons';
 import moment from "moment";
+import 'moment/locale/fr';
 import {faFileLines} from "@fortawesome/free-regular-svg-icons";
 
 initializeApp(firebaseConfig);

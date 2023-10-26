@@ -17,3 +17,9 @@ import {RouterLink} from "vue-router";
     </RouterLink>
   </footer>
 </template>
+
+<style scoped>
+.text-2xl.router-link-active {
+  color: #49A078;
+}
+</style>
