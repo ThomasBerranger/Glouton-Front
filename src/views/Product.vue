@@ -33,6 +33,10 @@ watch(product, async () => {
   await update(product.value);
 }, {deep: true})
 
+function goBack() {
+  router.go(-1);
+}
+
 async function finish() {
   product.value.finishedAt = moment().format('L');
   product.value.toPurchase = true;
@@ -75,7 +79,7 @@ function refill() {
   <section v-else>
     <div class="bg-white w-screen screen-min-height pt-5">
 
-      <h1 class="text-lg px-4 pb-4 truncate" @click="this.$router.go(-1)">
+      <h1 class="text-lg px-4 pb-4 truncate" @click="goBack">
         <font-awesome-icon icon="fa-solid fa-arrow-left-long"></font-awesome-icon>
         {{ product.name }}
       </h1>
