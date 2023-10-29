@@ -25,7 +25,7 @@ function getTimeLeftForHuman(product) {
 </script>
 
 <template>
-  <div class="mt-5 w-11/12 mx-auto">
+  <div class="mt-5 w-11/12 mx-auto list-height">
 
     <div v-if="props.products.loading" class="flex justify-center items-center px-3 h-24">
       <font-awesome-icon icon="fa-solid fa-circle-notch" spin class="h-6"></font-awesome-icon>
@@ -33,7 +33,8 @@ function getTimeLeftForHuman(product) {
 
     <RouterLink v-for="product in props.products.values" :to="'/product/' + product.id">
       <div class="grid grid-cols-12 bg-white my-3 shadow-md py-2 rounded-sm">
-        <img class="relative h-16 col-span-3 place-self-center rounded-sm" :src="product.image !== '' ? product.image : '/public/logo.png'">
+        <img class="relative h-16 col-span-3 place-self-center rounded-sm"
+             :src="product.image !== '' ? product.image : '/public/logo.png'">
         <div class="col-span-9 my-auto px-1 text-left">
           <p class="text-lg truncate">{{ product.name }}</p>
           <span
@@ -46,3 +47,10 @@ function getTimeLeftForHuman(product) {
 
   </div>
 </template>
+
+<style scoped>
+.list-height {
+  height: 80vh;
+  overflow-y: scroll;
+}
+</style>
