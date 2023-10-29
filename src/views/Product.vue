@@ -84,7 +84,8 @@ function refill() {
         {{ product.name }}
       </h1>
 
-      <img class="w-1/3 mx-auto px-2" :src="product.image !== '' ? product.image : '/public/logo.png'" :alt="product.name"/>
+      <img v-if="product.image" class="w-1/3 mx-auto px-2" :src="product.image" :alt="product.name"/>
+      <img v-else class="w-1/3 mx-auto px-2" src="/public/logo.png" alt="image missing">
 
       <div class="flex flex-wrap justify-center">
         <label for="name" class="w-4/5 mt-4 text-sm font-medium leading-6 text-gray-900">Nom du

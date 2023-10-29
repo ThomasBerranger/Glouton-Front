@@ -112,17 +112,6 @@ onMounted(async () => {
 function handleSlideStart(data) {
   currentSlide.value = data.slidingToIndex;
 }
-
-function handleSlideEnd(data) {
-  // let myElement = document.querySelector('.carousel__slide--active');
-  // let childElement = myElement.querySelector('div')
-  // if (childElement) {
-  //   console.log('Hauteur de la div:', childElement.clientHeight);
-  //
-  //   let carousel = document.querySelector('.carousel__viewport');
-  //   carousel.style.height = childElement.clientHeight + 'px';
-  // }
-}
 </script>
 
 <template>
@@ -145,7 +134,7 @@ function handleSlideEnd(data) {
     </button>
   </section>
 
-  <Carousel ref="myCarousel" :items-to-show="1" @slide-start="handleSlideStart" @slide-end="handleSlideEnd">
+  <Carousel ref="myCarousel" :items-to-show="1" @slide-start="handleSlideStart">
     <Slide v-for="category in productsByCategory" :key="category.slideKey" v-model="currentSlide">
       <HorizontalList :products="category"/>
     </Slide>

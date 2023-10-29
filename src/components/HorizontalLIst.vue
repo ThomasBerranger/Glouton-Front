@@ -33,8 +33,8 @@ function getTimeLeftForHuman(product) {
 
     <RouterLink v-for="product in props.products.values" :to="'/product/' + product.id">
       <div class="grid grid-cols-12 bg-white my-3 shadow-md py-2 rounded-sm">
-        <img class="relative h-16 col-span-3 place-self-center rounded-sm"
-             :src="product.image !== '' ? product.image : '/public/logo.png'">
+        <img v-if="product.image" class="relative h-16 col-span-3 place-self-center rounded-sm" :src="product.image" :alt="product.name">
+        <img v-else class="relative h-16 col-span-3 place-self-center rounded-sm" src="/public/logo.png" alt="image missing">
         <div class="col-span-9 my-auto px-1 text-left">
           <p class="text-lg truncate">{{ product.name }}</p>
           <span

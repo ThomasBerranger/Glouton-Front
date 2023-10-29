@@ -69,7 +69,8 @@ function refill(newDate) {
     <Transition>
       <div v-if="product.toPurchase" class="grid grid-cols-11 shadow shopping-list-product">
         <RouterLink :to="'/product/' + product.id" class="col-span-2">
-          <img :src="product.image !== '' ? product.image : '/public/logo.png'" :alt="product.name">
+          <img v-if="product.image" :src="product.image" :alt="product.name">
+          <img v-else src="/public/logo.png" alt="image missing">
         </RouterLink>
         <RouterLink :to="'/product/' + product.id" class="col-span-7 px-2 truncate">{{ product.name }}</RouterLink>
         <button type="button" @click="displayDatepicker = true; productToRefill = product;"
