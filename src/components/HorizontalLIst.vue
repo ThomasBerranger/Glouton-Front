@@ -52,5 +52,10 @@ function getTimeLeftForHuman(product) {
 .list-height {
   height: 80vh;
   overflow-y: scroll;
+
+  scrollbar-width: 0;
+}
+.list-height::-webkit-scrollbar {
+  width: 0
 }
 </style>
