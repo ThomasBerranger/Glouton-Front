@@ -30,6 +30,9 @@ function getTimeLeftForHuman(product) {
     <div v-if="props.products.loading" class="flex justify-center items-center px-3 h-24">
       <font-awesome-icon icon="fa-solid fa-circle-notch" spin class="h-6"></font-awesome-icon>
     </div>
+    <div v-else-if="props.products.values.length < 1" class="flex justify-center items-center h-24">
+      <h1>Aucun article</h1>
+    </div>
 
     <RouterLink v-for="product in props.products.values" :to="'/product/' + product.id">
       <div class="grid grid-cols-12 bg-white my-3 shadow-md py-2 rounded-sm">
