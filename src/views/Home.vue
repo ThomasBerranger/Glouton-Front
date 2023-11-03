@@ -12,8 +12,8 @@ import 'vue3-carousel/dist/carousel.css';
 let productsByCategory = ref({
   week: {slideKey: 0, values: [], loading: true},
   month: {slideKey: 1, values: [], loading: true},
-  finished: {slideKey: 2, values: [], loading: true},
-  other: {slideKey: 3, values: [], loading: true}
+  other: {slideKey: 3, values: [], loading: true},
+  finished: {slideKey: 2, values: [], loading: true}
 });
 
 const myCarousel = ref(null);
@@ -115,7 +115,7 @@ function handleSlideStart(data) {
 </script>
 
 <template>
-  <section class="w-screen flex justify-evenly h-20 fixed z-10 white-background items-center">
+  <section class="w-screen flex justify-evenly h-16 fixed z-10 white-background items-center">
     <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(0)"
             :class="[currentSlide === 0 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
       Semaine
@@ -145,7 +145,7 @@ function handleSlideStart(data) {
 
 <style>
 .carousel {
-  top: 6vh;
+  top: 4vh;
 }
 .carousel__slide {
   align-items: flex-start;

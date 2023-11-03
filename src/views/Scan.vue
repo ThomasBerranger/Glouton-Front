@@ -1,9 +1,9 @@
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import router from "@/router";
 import axios from "axios";
 import moment from "moment";
-import {Html5QrcodeScanner} from 'html5-qrcode';
+import {Html5Qrcode, Html5QrcodeScanner} from 'html5-qrcode';
 import {getAuth} from 'firebase/auth';
 import {getApp} from "firebase/app";
 import {getFirestore, collection, addDoc, query, where, getDocs} from 'firebase/firestore';
@@ -14,30 +14,50 @@ import {renameScanTexts} from "@/functions/scan";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 let scanActive = ref(true);
-let productNotFound = ref(false);
+let scanIssue = ref({display: false, message: ''});
 let displayDatepicker = ref(false);
 let product = ref({expirationDates: [null]});
 let selectedExpirationDate = ref({key: null, value: null});
 let availableImages = ref([]);
 
+let cameraIds = null;
+let html5QrCode = null;
+
 onMounted(() => {
-  const html5QrcodeScanner = new Html5QrcodeScanner(
-      'qrCodeScanner',
-      {
-        fps: 10,
-        qrbox: 250,
-      },
-      false
-  );
+  html5QrCode = new Html5Qrcode("qrCodeScanner");
 
-  html5QrcodeScanner.render(onScanSuccess, (error) => {
-    console.error(error)
+  Html5Qrcode.getCameras().then(devices => {
+    if (devices && devices.length) {
+      cameraIds = devices[0].id;
+    }
+
+    html5QrCode.start(
+        cameraIds,
+        {fps: 10, qrbox: {width: 250, height: 250}},
+        (decodedText) => {
+          stopCameraScan();
+          scanSuccess(decodedText);
+        },
+        (errorMessage) => {
+          console.log(errorMessage);
+        })
+  }).catch(err => {
+    scanIssue.value.display = true;
+    scanIssue.value.message = 'Aucune camera trouvée';
   });
-
-  renameScanTexts();
 });
 
-async function onScanSuccess(decodedText, decodedResult) {
+onUnmounted(() => {
+  stopCameraScan();
+});
+
+function stopCameraScan() {
+  if (html5QrCode && html5QrCode.getState() !== 1) {
+    html5QrCode.stop();
+  }
+}
+
+async function scanSuccess(decodedText) {
   const db = getFirestore(getApp());
   const q = query(
       collection(db, "products"),
@@ -66,10 +86,11 @@ async function onScanSuccess(decodedText, decodedResult) {
           product.value.image = availableImages.value ? availableImages.value[0] : '';
 
           scanActive.value = false;
-          productNotFound.value = false;
+          scanIssue.value.display = false;
         })
         .catch(error => {
-          productNotFound.value = true;
+          scanIssue.value.display = true;
+          scanIssue.value.message = 'Produit inconnu';
         });
   }
 }
@@ -93,7 +114,10 @@ async function saveProduct() {
 </script>
 
 <template>
-  <div v-if="scanActive" id="qrCodeScanner" class="bg-white shadow"></div>
+  <div v-if="scanActive" class="text-center">
+    <h1 class="my-10">Scannez votre article</h1>
+    <div id="qrCodeScanner" class="bg-white shadow"></div>
+  </div>
   <div v-else class="bg-white mt-10">
 
     <div class="w-screen p-5">
@@ -155,7 +179,7 @@ async function saveProduct() {
     </div>
   </div>
 
-  <p v-if="productNotFound" class="w-screen text-center pt-5">Article inconnu</p>
+  <p v-if="scanIssue.display" class="w-screen text-center pt-5">{{ scanIssue.message }}</p>
 
   <div class="h-20"></div>
 </template>
@@ -163,7 +187,7 @@ async function saveProduct() {
 <style>
 #qrCodeScanner {
   width: 90vw;
-  margin: 10vh 5vw 0 5vw !important;
+  margin: 0 5vw 3vh 5vw !important;
 }
 
 #qrCodeScanner img {
