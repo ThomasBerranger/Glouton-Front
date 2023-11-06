@@ -12,6 +12,7 @@ import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue
 import {add} from "@/functions/product";
 import {renameScanTexts} from "@/functions/scan";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import logger from "@fortawesome/vue-fontawesome/src/logger";
 
 let scanActive = ref(true);
 let scanIssue = ref({display: false, message: ''});
@@ -20,27 +21,20 @@ let product = ref({expirationDates: [null]});
 let selectedExpirationDate = ref({key: null, value: null});
 let availableImages = ref([]);
 
-let cameraIds = null;
+let cameraIds = ref([]);
+let selectedCameraId = ref(null);
 let html5QrCode = null;
 
 onMounted(() => {
   html5QrCode = new Html5Qrcode("qrCodeScanner");
 
   Html5Qrcode.getCameras().then(devices => {
-    if (devices && devices.length) {
-      cameraIds = devices[0].id;
+    if (devices && devices.length === 1) {
+      selectedCameraId.value = devices[0].id;
+      startCamera();
+    } else {
+      cameraIds.value = devices;
     }
-
-    html5QrCode.start(
-        cameraIds,
-        {fps: 10, qrbox: {width: 250, height: 250}},
-        (decodedText) => {
-          stopCameraScan();
-          scanSuccess(decodedText);
-        },
-        (errorMessage) => {
-          console.log(errorMessage);
-        })
   }).catch(err => {
     scanIssue.value.display = true;
     scanIssue.value.message = 'Aucune camera trouvée';
@@ -50,6 +44,21 @@ onMounted(() => {
 onUnmounted(() => {
   stopCameraScan();
 });
+
+function startCamera() {
+  if (html5QrCode && html5QrCode.getState() !== 2 && selectedCameraId) {
+    html5QrCode.start(
+        selectedCameraId.value,
+        {fps: 10, qrbox: {width: 250, height: 250}},
+        (decodedText) => {
+          stopCameraScan();
+          scanSuccess(decodedText);
+        },
+        (errorMessage) => {
+          console.log(errorMessage);
+        })
+  }
+}
 
 function stopCameraScan() {
   if (html5QrCode && html5QrCode.getState() !== 1) {
@@ -115,8 +124,20 @@ async function saveProduct() {
 
 <template>
   <div v-if="scanActive" class="text-center">
-    <h1 class="my-10">Scannez votre article</h1>
+    <h1 v-if="selectedCameraId" class="my-10">Scannez votre article</h1>
     <div id="qrCodeScanner" class="bg-white shadow"></div>
+    <div v-if="cameraIds && !selectedCameraId">
+      <h1 class="mb-3">Sélectionnez une camera</h1>
+      <ul>
+        <li v-for="cameraId in cameraIds" :key="cameraId.id">
+          <button @click="selectedCameraId = cameraId.id, startCamera()"
+                  class="rounded shadow-md green-background text-sm font-semibold text-white p-3 my-2">{{
+              cameraId.label
+            }}
+          </button>
+        </li>
+      </ul>
+    </div>
   </div>
   <div v-else class="bg-white mt-10">
 
