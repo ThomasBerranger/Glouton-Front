@@ -20,6 +20,7 @@ import {
 import moment from "moment";
 import 'moment/locale/fr';
 import {faFileLines} from "@fortawesome/free-regular-svg-icons";
+import store from "@/assets/store";
 
 initializeApp(firebaseConfig);
 
@@ -27,7 +28,7 @@ library.add(faBarcode, faCartShopping, faUtensils, faChevronDown, faChevronUp, f
 
 const app = createApp(App);
 
-app.use(router);
+app.use(router, store);
 
 app.component('font-awesome-icon', FontAwesomeIcon);
 

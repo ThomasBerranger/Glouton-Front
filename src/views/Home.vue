@@ -8,6 +8,7 @@ import moment from "moment";
 import {getNearestExpirationTimestampDate} from "@/functions/product";
 import {Carousel, Slide} from 'vue3-carousel';
 import 'vue3-carousel/dist/carousel.css';
+import store from "@/assets/store";
 
 let productsByCategory = ref({
   week: {slideKey: 0, values: [], loading: true},
@@ -17,7 +18,6 @@ let productsByCategory = ref({
 });
 
 const myCarousel = ref(null);
-let currentSlide = ref(0);
 
 const db = getFirestore(getApp());
 
@@ -110,32 +110,32 @@ onMounted(async () => {
 );
 
 function handleSlideStart(data) {
-  currentSlide.value = data.slidingToIndex;
+  store.commit('changeActiveSlide', data.slidingToIndex);
 }
 </script>
 
 <template>
   <section class="w-screen flex justify-evenly h-16 fixed z-10 white-background items-center">
     <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(0)"
-            :class="[currentSlide === 0 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
+            :class="[store.state.activeSlide === 0 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
       Semaine
     </button>
     <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(1)"
-            :class="[currentSlide === 1 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
+            :class="[store.state.activeSlide === 1 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
       Mois
     </button>
     <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(2)"
-            :class="[currentSlide === 2 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
+            :class="[store.state.activeSlide === 2 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
       Année
     </button>
     <button class="text-sm rounded-sm font-medium uppercase" @click="myCarousel.slideTo(3)"
-            :class="[currentSlide === 3 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
+            :class="[store.state.activeSlide === 3 ? 'text-white green-background px-4 py-2' : 'green-color bg-white px-2 py-2 tracking-wide ring-inset ring-1 green-ring']">
       Terminé
     </button>
   </section>
 
-  <Carousel ref="myCarousel" :items-to-show="1" @slide-start="handleSlideStart">
-    <Slide v-for="category in productsByCategory" :key="category.slideKey" v-model="currentSlide">
+  <Carousel ref="myCarousel" :items-to-show="1" @slide-start="handleSlideStart" :modelValue="store.state.activeSlide">
+    <Slide v-for="category in productsByCategory" :key="category.slideKey" v-model="store.state.activeSlide">
       <HorizontalList :products="category"/>
     </Slide>
   </Carousel>
@@ -147,6 +147,7 @@ function handleSlideStart(data) {
 .carousel {
   top: 4vh;
 }
+
 .carousel__slide {
   align-items: flex-start;
 }
