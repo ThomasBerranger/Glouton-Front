@@ -43,7 +43,6 @@ onUnmounted(() => {
 
 function getAvailableCamera() {
   Html5Qrcode.getCameras().then(devices => {
-    devices.push(devices[0]);
     cameraIds.value = devices;
   }).catch(err => {
     scanIssue.value.display = true;
