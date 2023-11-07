@@ -30,10 +30,10 @@ const emit = defineEmits(['close']);
               </div>
             </div>
 
-            <div class="ml-3 mt-4 text-sm">
+            <div class="ml-3 my-6 text-sm">
               {{ props.suppression.message }}
             </div>
-            <div class="text-center mt-4">
+            <div class="text-center">
               <button @click="remove(suppression.product).then(() => router.push('/'))"
                       class="font-medium purple-background text-white rounded-sm px-3 py-0.5">Supprimer
               </button>
