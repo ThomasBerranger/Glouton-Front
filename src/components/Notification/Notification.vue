@@ -18,7 +18,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="notification rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+    <div class="notification rounded-lg bg-white shadow-lg border-2 purple-border">
       <div class="pl-0.5 pr-2 py-3">
         <div class="flex items-center">
           <div class="ml-3 w-0 flex-1 pt-0.5">
@@ -26,7 +26,7 @@ onMounted(() => {
           </div>
           <div class="ml-4 flex flex-shrink-0">
             <button type="button" @click="$emit('close')"
-                    class="inline-flex rounded-md bg-white text-gray-500">
+                    class="inline-flex rounded-md bg-white purple-color">
               <span class="sr-only">Close</span>
               <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                 <path

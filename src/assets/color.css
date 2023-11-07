@@ -42,6 +42,14 @@
     --tw-ring-color: #AC393132;
 }
 
+.purple-color {
+    color: #824E6D;
+}
+
 .purple-background {
     background-color: #824E6D;
+}
+
+.purple-border {
+    border-color: #824E6D;
 }

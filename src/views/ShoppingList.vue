@@ -60,12 +60,12 @@ function refill(newDate) {
 
   <div class="w-screen flex justify-between items-center p-3 mt-1">
     <h2 class="text-xl">Ma liste de course</h2>
-    <RouterLink to="/account">
+    <RouterLink to="/account" class="purple-color">
       <font-awesome-icon icon="fa-solid fa-user" class="text-2xl"/>
     </RouterLink>
   </div>
 
-  <div v-for='product in products' class="w-screen" :key="product.id">
+  <div v-for='product in products' class="w-screen px-2 rounded-md" :key="product.id">
     <Transition>
       <div v-if="product.toPurchase" class="grid grid-cols-11 shadow shopping-list-product">
         <RouterLink :to="'/product/' + product.id" class="col-span-2">

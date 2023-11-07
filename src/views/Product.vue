@@ -150,7 +150,7 @@ function refill() {
                 class="rounded-md border-2 px-2.5 py-1.5 text-sm font-medium shadow-sm">
           J'en ai acheté
         </button>
-        <button class="rounded-md px-2.5 py-1.5 text-sm font-medium shadow-sm text-white purple-background"
+        <button class="text-lg font-medium purple-color"
                 @click="remove(product).then(() => router.push('/'))">
           <font-awesome-icon icon="fa-solid fa-trash"/>
         </button>
