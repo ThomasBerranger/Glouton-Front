@@ -13,6 +13,7 @@ import {add} from "@/functions/product";
 import {renameScanTexts} from "@/functions/scan";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import logger from "@fortawesome/vue-fontawesome/src/logger";
+import store from "@/assets/store";
 
 let scanActive = ref(true);
 let scanIssue = ref({display: false, message: ''});
@@ -21,34 +22,43 @@ let product = ref({expirationDates: [null]});
 let selectedExpirationDate = ref({key: null, value: null});
 let availableImages = ref([]);
 
-let cameraIds = ref([]);
-let selectedCameraId = ref(null);
 let html5QrCode = null;
+let cameraIds = ref([]);
 
 onMounted(() => {
   html5QrCode = new Html5Qrcode("qrCodeScanner");
 
-  Html5Qrcode.getCameras().then(devices => {
-    if (devices && devices.length === 1) {
-      selectedCameraId.value = devices[0].id;
+  if (store.state.registeredCamera) {
+    Html5Qrcode.getCameras().then(() => {
       startCamera();
-    } else {
-      cameraIds.value = devices;
-    }
-  }).catch(err => {
-    scanIssue.value.display = true;
-    scanIssue.value.message = 'Aucune camera trouvée';
-  });
+    });
+  } else {
+    getAvailableCamera();
+  }
 });
 
 onUnmounted(() => {
   stopCameraScan();
 });
 
+function getAvailableCamera() {
+  Html5Qrcode.getCameras().then(devices => {
+    devices.push(devices[0]);
+    cameraIds.value = devices;
+  }).catch(err => {
+    scanIssue.value.display = true;
+    scanIssue.value.message = 'Aucune camera trouvée';
+  });
+}
+
+function selectCamera(cameraId) {
+  store.commit('changeRegisteredCamera', cameraId);
+}
+
 function startCamera() {
-  if (html5QrCode && html5QrCode.getState() !== 2 && selectedCameraId) {
+  if (html5QrCode && html5QrCode.getState() !== 2) {
     html5QrCode.start(
-        selectedCameraId.value,
+        store.state.registeredCamera,
         {fps: 10, qrbox: {width: 250, height: 250}},
         (decodedText) => {
           stopCameraScan();
@@ -124,23 +134,30 @@ async function saveProduct() {
 
 <template>
   <div v-if="scanActive" class="text-center">
-    <h1 v-if="selectedCameraId" class="my-10">Scannez votre article</h1>
+
+    <h1 v-if="store.state.registeredCamera" class="my-10">Scannez votre article</h1>
     <div id="qrCodeScanner" class="bg-white shadow"></div>
-    <div v-if="cameraIds && !selectedCameraId">
+
+    <p v-if="scanIssue.display" class="w-screen text-center pt-5">{{ scanIssue.message }}</p>
+    <div v-else-if="!store.state.registeredCamera">
       <h1 class="mb-3">Sélectionnez une camera</h1>
       <ul>
         <li v-for="cameraId in cameraIds" :key="cameraId.id">
-          <button @click="selectedCameraId = cameraId.id, startCamera()"
-                  class="rounded shadow-md green-background text-sm font-semibold text-white p-3 my-2">{{
-              cameraId.label
-            }}
+          <button @click="selectCamera(cameraId.id); startCamera();"
+                  class="rounded shadow-md green-background text-sm font-semibold text-white p-3 my-2">
+            {{ cameraId.label }}
           </button>
         </li>
       </ul>
     </div>
+    <div v-else>
+      <button @click="stopCameraScan(); selectCamera(null); getAvailableCamera();"
+              class="rounded shadow-md green-background text-sm font-semibold text-white p-3 my-2">Changer de caméra
+      </button>
+    </div>
+
   </div>
   <div v-else class="bg-white mt-10">
-
     <div class="w-screen p-5">
 
       <div class="mb-5 text-center text-xl">{{ product.name }}</div>
@@ -199,8 +216,6 @@ async function saveProduct() {
 
     </div>
   </div>
-
-  <p v-if="scanIssue.display" class="w-screen text-center pt-5">{{ scanIssue.message }}</p>
 
   <div class="h-20"></div>
 </template>
