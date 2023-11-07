@@ -5,12 +5,13 @@ import {onMounted, ref, watch} from "vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {getApp} from "firebase/app";
 import {doc, getDoc, getFirestore} from "firebase/firestore";
-import {remove, update} from "@/functions/product";
+import {update} from "@/functions/product";
 import moment from "moment";
 import EatButton from "@/components/EatButton.vue";
+import ScoresValue from "@/components/ScoresValue.vue";
 import NotificationContainer from "@/components/Notification/NotificationContainer.vue";
 import DatepickerContainer from "@/components/Datepicker/DatepickerContainer.vue";
-import ScoresValue from "@/components/ScoresValue.vue";
+import SuppressionContainer from "@/components/Suppression/SuppressionContainer.vue";
 
 const db = getFirestore(getApp());
 const route = useRoute();
@@ -22,10 +23,14 @@ let product = ref({});
 let displayDatepicker = ref(false);
 let selectedExpirationDate = ref({key: null, value: null});
 let notification = ref({show: false, message: '', timeout: 3000});
+let suppression = ref({show: false, message: ''});
 
 onMounted(async () => {
   getDoc(doc(db, "products", productId)).then((data) => {
     product.value = {...data.data(), id: data.id};
+  }).then(() => {
+    suppression.value.message = `La suppresion de ${product.value.name} sera définitive.`;
+    suppression.value.product = {'id': product.value.id};
   })
 });
 
@@ -44,7 +49,7 @@ async function finish() {
 
   update(product.value).then(() => {
     notification.value.show = true;
-    notification.value.message = `${product.value.name} a été jouté à la liste de courses.`;
+    notification.value.message = `${product.value.name} a été ajouté à la liste de courses.`;
   })
 }
 
@@ -71,6 +76,7 @@ function refill() {
 <template>
 
   <NotificationContainer :notification="notification" @close="notification.show = false"/>
+  <SuppressionContainer :suppression="suppression" @close="suppression.show = false;"/>
 
   <section v-if="! product.code"
            class="w-screen screen-height flex justify-center items-center">
@@ -151,7 +157,7 @@ function refill() {
           J'en ai acheté
         </button>
         <button class="text-lg font-medium purple-color"
-                @click="remove(product).then(() => router.push('/'))">
+                @click="suppression.show = true">
           <font-awesome-icon icon="fa-solid fa-trash"/>
         </button>
       </div>

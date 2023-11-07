@@ -1,19 +1,13 @@
 <script setup>
-import {onMounted, ref, watch} from "vue";
+import {onMounted} from "vue";
 
 const props = defineProps(['notification']);
 const emit = defineEmits(['close']);
 
-let notification = ref(props.notification);
-
-watch(() => props.notification, (newNotification) => {
-  notification.value = newNotification;
-});
-
 onMounted(() => {
   setTimeout(() => {
     emit('close');
-  }, notification.value.timeout)
+  }, props.notification.timeout)
 })
 </script>
 
@@ -22,7 +16,7 @@ onMounted(() => {
       <div class="pl-0.5 pr-2 py-3">
         <div class="flex items-center">
           <div class="ml-3 w-0 flex-1 pt-0.5">
-            <p class="text-sm font-medium text-gray-600">{{ notification.message }}</p>
+            <p class="text-sm font-medium text-gray-600">{{ props.notification.message }}</p>
           </div>
           <div class="ml-4 flex flex-shrink-0">
             <button type="button" @click="$emit('close')"
