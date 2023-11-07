@@ -8,7 +8,7 @@ const emit = defineEmits(['close']);
 
 <template>
   <section>
-    <div class="absolute top-0 left-0 w-screen bg-black opacity-80 h-screen" @click="$emit('close');"></div>
+    <div class="absolute top-0 left-0 w-screen bg-black opacity-80 min-screen-height h-full" @click="$emit('close');"></div>
     <div class="absolute-center w-11/12">
 
       <div class="flex justify-between items-center p-3">

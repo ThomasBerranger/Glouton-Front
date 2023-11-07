@@ -35,6 +35,10 @@ footer {
     height: 87vh;
 }
 
+.min-screen-height {
+    min-height: 87vh;
+}
+
 .screen-min-height {
     height: 87vh;
 }
