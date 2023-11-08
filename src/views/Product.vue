@@ -74,9 +74,11 @@ function refill() {
 </script>
 
 <template>
-
   <NotificationContainer :notification="notification" @close="notification.show = false"/>
   <SuppressionContainer :suppression="suppression" @close="suppression.show = false;"/>
+  <DatepickerContainer :display="displayDatepicker && product"
+                       :date="selectedExpirationDate.value ?? moment().format('L')"
+                       @update-date="(newDate) => { product.expirationDates[selectedExpirationDate.key] = newDate; displayDatepicker = false; }"/>
 
   <section v-if="! product.code"
            class="w-screen screen-height flex justify-center items-center">
@@ -130,10 +132,6 @@ function refill() {
                 class="rounded-md shadow-md pt-1 mt-1 text-sm font-semibold text-white w-4/5 green-background">
           <font-awesome-icon icon="fa-solid fa-plus" class="text-xl"/>
         </button>
-
-        <DatepickerContainer :display="displayDatepicker && product"
-                             :date="selectedExpirationDate.value ?? moment().format('L')"
-                             @update-date="(newDate) => { product.expirationDates[selectedExpirationDate.key] = newDate; displayDatepicker = false; }"/>
 
         <ScoresValue :product="product" class="mt-3 px-5"/>
 
