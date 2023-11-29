@@ -56,9 +56,17 @@ function selectCamera(cameraId) {
 
 function startCamera() {
   if (html5QrCode && html5QrCode.getState() !== 2) {
+    const height = document.body.offsetHeight
+    const width = document.body.offsetWidth
+    const minWidth = Math.min(height, width)
+
     html5QrCode.start(
         store.state.registeredCamera,
-        {fps: 10, qrbox: {width: 250, height: 250}},
+        {
+          fps: 10,
+          qrbox: {minWidth: minWidth * 0.667, minHeight: minWidth * 0.667, width: 250, height: 250},
+          aspectRatio: Math.ceil(height / width)
+        },
         (decodedText) => {
           stopCameraScan();
           scanSuccess(decodedText);
