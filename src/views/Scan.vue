@@ -65,7 +65,7 @@ function startCamera() {
         {
           fps: 10,
           qrbox: {minWidth: minWidth * 0.667, minHeight: minWidth * 0.667, width: 250, height: 250},
-          aspectRatio: Math.ceil(height / width)
+          aspectRatio: Math.ceil(height / width),
         },
         (decodedText) => {
           stopCameraScan();
@@ -73,7 +73,16 @@ function startCamera() {
         },
         (errorMessage) => {
           console.log(errorMessage);
-        })
+        }
+    )
+
+    // https://github.com/mebjas/html5-qrcode/issues/308
+    // setTimeout(function () {
+    //   html5QrCode.applyVideoConstraints({
+    //     focusMode: "continuous",
+    //     advanced: [{ zoom: 2.0 }],
+    //   });
+    // }, 2000);
   }
 }
 
