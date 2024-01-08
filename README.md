@@ -13,23 +13,26 @@ Elle vous permet de mieux gérer votre garde-manger et éviter de perdre des ali
 ## Projet
 
 <div align="center">
-
-![Login](https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/7df2db62-ce40-4e8c-b62a-d00f63ce10ef)
+  
+![navigation](https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/ac5cf8d9-e195-444a-9949-52c98fe2a4e5)
 
 </div>
 
 <details>
   <summary>Authentification</summary>
-  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/7df2db62-ce40-4e8c-b62a-d00f63ce10ef">
+  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/e491ee2a-9e44-4d8e-ba8a-e38e65f6935c">
 </details>
 <details>
   <summary>Ajout d'un article</summary>
+  Bientôt
 </details>
 <details>
   <summary>Modification d'un article</summary>
+  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/eff5a006-3dc4-4a76-b202-146e290fd9c6">
 </details>
 <details>
   <summary>Liste de course</summary>
+  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/fae63f0d-2ec6-43a0-b959-0a359e12b01f">
 </details>
 
 ## Les composants du projet
