@@ -13,26 +13,26 @@ Elle vous permet de mieux gérer votre garde-manger et éviter de perdre des ali
 ## Projet
 
 <div align="center">
-  
-![navigation](https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/ac5cf8d9-e195-444a-9949-52c98fe2a4e5)
+
+![navigation](https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/25fd6d83-af48-4d86-98ab-c44bd7fae2d5)
 
 </div>
 
 <details>
-  <summary>Authentification</summary>
-  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/e491ee2a-9e44-4d8e-ba8a-e38e65f6935c">
+  <summary>Connexion</summary>
+  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/7df2db62-ce40-4e8c-b62a-d00f63ce10ef">
 </details>
 <details>
   <summary>Ajout d'un article</summary>
-  Bientôt
+  Vidéo bientôt disponible
 </details>
 <details>
   <summary>Modification d'un article</summary>
-  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/eff5a006-3dc4-4a76-b202-146e290fd9c6">
+  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/f3a3a5e4-ca0b-4904-9213-9cf80f3c0dfc">
 </details>
 <details>
   <summary>Liste de course</summary>
-  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/fae63f0d-2ec6-43a0-b959-0a359e12b01f">
+  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/dfded788-0a87-4045-bb61-73db1641f10d">
 </details>
 
 ## Les composants du projet
@@ -40,7 +40,7 @@ Elle vous permet de mieux gérer votre garde-manger et éviter de perdre des ali
 <a href="https://vuejs.org/"><img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/c4f8d90b-ef06-44ae-9778-4ed0c99ebae6" alt="Vue.js logo" width="120" height="40"></a>
 
 Glouton est une application web Vue.js 3.
-Les appels à l'API sont réalisés via vuex et le routing de l'application est pris en charge par vue router.
+La gestion du store et les appels à l'API sont réalisés via vuex et le routing de l'application est pris en charge par vue router.
 
 <a href="https://firebase.google.com/"><img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/31f9b051-7324-43b5-b766-1770441a20cc" alt="Firebase logo" width="140" height="50"></a>
 
@@ -84,9 +84,12 @@ firebase init
 npm run dev
 ```
 
-## L'auteur
+## Contact
 
 Thomas Berranger - <a href="https://www.linkedin.com/in/thomas-berranger/">Linkedin</a> - tberranger@hotmail.fr
+
+
+
 
 <!-- 🥚
 Commandes pour la mise en production
