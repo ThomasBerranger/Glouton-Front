@@ -19,8 +19,8 @@ Elle vous permet de mieux gérer votre garde-manger et éviter de perdre des ali
 </div>
 
 <details>
-  <summary>Connexion</summary>
-  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/7df2db62-ce40-4e8c-b62a-d00f63ce10ef">
+  <summary>Authentification</summary>
+  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/fe36c22e-0e2f-457c-af2d-adc64802d12a">
 </details>
 <details>
   <summary>Ajout d'un article</summary>
@@ -71,6 +71,21 @@ Le package <a href="https://momentjs.com">Moment.js<a> pour le traitement et la 
 Le package <a href="https://ismail9k.github.io/vue3-carousel">Vue3-carousel<a> pour la navigation horizontal.
 </li>
 </ul>
+
+## Roadmap
+
+- [x] Création du projet Vue.js x Vite
+- [x] Création du compte firebase
+- [x] Configuration PWA
+- [x] Création des interfaces
+- [x] Intégration du scan de code-barres
+- [x] Création des appels API aux services Firebase
+- [x] Configuration du store
+- [x] Intégration de vue3-carousel
+- [ ] Correction du bug de scan sur Iphone
+- [ ] Utilisation de l'API Laravel une fois prête
+- [ ] Ajout d'articles sans code-barres
+- [ ] Création des recettes
 
 ## Comment faire tourner en local Glouton
 
