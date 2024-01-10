@@ -79,6 +79,7 @@ Le package <a href="https://ismail9k.github.io/vue3-carousel">Vue3-carousel</a> 
 - [x] Création du compte firebase
 - [x] Configuration PWA
 - [x] Création des interfaces
+- [x] Création du datepicker
 - [x] Intégration du scan de code-barres
 - [x] Création des appels API aux services Firebase
 - [x] Configuration du store
