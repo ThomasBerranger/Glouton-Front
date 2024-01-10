@@ -23,8 +23,9 @@ Elle vous permet de mieux gérer votre garde-manger et éviter de perdre des ali
   <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/fe36c22e-0e2f-457c-af2d-adc64802d12a">
 </details>
 <details>
-  <summary>Ajout d'un article</summary>
-  Vidéo bientôt disponible
+  <summary>Scan d'un article</summary>
+  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/7ff29b0b-7adb-4f6f-89b6-a5f4107bbcd6">
+  <img src="https://github.com/ThomasBerranger/Glouton-Front/assets/15357887/c5fb10c0-5216-4195-b460-a51d105e9b17"> 
 </details>
 <details>
   <summary>Modification d'un article</summary>
