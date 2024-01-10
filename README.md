@@ -65,11 +65,11 @@ L'outil de construction <a href="https://vitejs.dev/guide">Vite</a> et du packag
 </li>
 
 <li>
-Le package <a href="https://momentjs.com">Moment.js<a> pour le traitement et la conversion des dates.
+Le package <a href="https://momentjs.com">Moment.js</a> pour le traitement et la conversion des dates.
 </li>
 
 <li>
-Le package <a href="https://ismail9k.github.io/vue3-carousel">Vue3-carousel<a> pour la navigation horizontal.
+Le package <a href="https://ismail9k.github.io/vue3-carousel">Vue3-carousel</a> pour la navigation horizontal.
 </li>
 </ul>
 
