@@ -104,9 +104,6 @@ npm run dev
 
 Thomas Berranger - <a href="https://www.linkedin.com/in/thomas-berranger/">Linkedin</a> - tberranger@hotmail.fr
 
-
-
-
 <!-- 🥚
 Commandes pour la mise en production
 ```
